@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Zach's View — Holly's Mood 👀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --white: #FFFFFF; --brown: #4A3B33; --ink: #2B2320; }
+
+  body.mood-happy{ --bg-top:#FDF1E6; --bg-bottom:#FBE4D0; --loose-text:#7A6459; --accent:#FF8FA8; }
+  body.mood-tired{ --bg-top:#EDE7F6; --bg-bottom:#D9CFEA; --loose-text:#6B6079; --accent:#9C8FC2; }
+  body.mood-sad{ --bg-top:#E3EEF9; --bg-bottom:#C9DFF0; --loose-text:#5C7288; --accent:#6FA3D1; }
+  body.mood-mad{ --bg-top:#FFE0D2; --bg-bottom:#FFB99F; --loose-text:#8A4A36; --accent:#FF6B4A; }
+  body.mood-hungry{ --bg-top:#FFF3D6; --bg-bottom:#FFDFA0; --loose-text:#8A6A2C; --accent:#FFA83D; }
+  body.mood-sleepy{ --bg-top:#3A3560; --bg-bottom:#22203E; --loose-text:#CFC9EA; --accent:#9E90D8; }
+  body.mood-excited{ --bg-top:#FFEE9E; --bg-bottom:#FFB3DE; --loose-text:#8A5A72; --accent:#FF5FA8; }
+  body.mood-naughty{ --bg-top:#F1DFFF; --bg-bottom:#FFCCEB; --loose-text:#7A4F8A; --accent:#C463D9; }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body{ margin:0; padding:0; min-height:100%; }
+
+  body{
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    transition: background 0.7s ease;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--brown);
+    display:flex; justify-content:center;
+    min-height:100vh; position:relative; overflow-x:hidden;
+  }
+
+  #particle-layer{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+  .floating-particle{
+    position:absolute; bottom:-10%; font-size:20px; opacity:0.85;
+    animation-name: float-up; animation-timing-function: ease-in; animation-fill-mode: forwards; user-select:none;
+  }
+  @keyframes float-up{
+    0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.9; } 90%{ opacity:0.7; }
+    100%{ transform: translateY(-110vh) translateX(var(--drift,20px)) rotate(25deg); opacity:0; }
+  }
+
+  .page{
+    position:relative; z-index:2; width:100%; max-width:480px;
+    padding:32px 20px 48px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+
+  header{ margin-bottom:8px; }
+  .names{ font-family:'Baloo 2',cursive; font-weight:700; font-size:clamp(24px,7vw,32px); color:var(--accent); margin:0; letter-spacing:0.5px; transition:color 0.6s ease; }
+  .private-tag{
+    display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:6px 16px;
+    background:rgba(255,255,255,0.6); border-radius:999px; font-size:12px; font-weight:700;
+    color:var(--loose-text); letter-spacing:0.5px; text-transform:uppercase; transition:color 0.6s ease;
+  }
+
+  .section-title{ margin-top:26px; font-family:'Baloo 2',cursive; font-weight:700; font-size:clamp(18px,5vw,22px); color:var(--accent); transition:color 0.6s ease; }
+  .mood-label{ margin-top:2px; font-size:15px; font-weight:700; color:var(--brown); text-transform:capitalize; }
+  .updated-at{ margin-top:6px; font-size:13px; color:var(--loose-text); transition:color 0.6s ease; }
+
+  .face-wrap{ margin-top:20px; position:relative; width:min(48vw,190px); }
+  .face-wrap svg{ width:100%; height:auto; display:block; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.15)); transition: transform 0.18s cubic-bezier(.34,1.56,.64,1); }
+  .face-wrap.bounce svg{ animation: face-bounce 0.55s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes face-bounce{
+    0%{ transform:scale(1) rotate(0deg); } 30%{ transform:scale(0.9,1.08) rotate(-2deg); }
+    55%{ transform:scale(1.08,0.94) rotate(2deg); } 75%{ transform:scale(0.97,1.03) rotate(-1deg); }
+    100%{ transform:scale(1) rotate(0deg); }
+  }
+
+  .face{ display:none; }
+  .face.active{ display:block; }
+
+  .bubble{
+    margin-top:18px; min-height:74px; width:100%; max-width:340px; background:var(--white);
+    border-radius:22px; padding:18px 22px; box-shadow:0 8px 24px rgba(0,0,0,0.14);
+    position:relative; display:flex; align-items:center; justify-content:center;
+  }
+  .bubble::before{ content:""; position:absolute; top:-9px; left:50%; transform:translateX(-50%) rotate(45deg); width:18px; height:18px; background:var(--white); border-radius:4px; }
+  .bubble p{ margin:0; font-family:'Baloo 2',cursive; font-weight:600; font-size:clamp(15px,4.3vw,18px); line-height:1.4; color:var(--brown); }
+
+  .status-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#5FD37D; margin-right:6px; animation: pulse-dot 1.8s ease-in-out infinite; }
+  @keyframes pulse-dot{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+  .live-row{ display:flex; align-items:center; justify-content:center; margin-top:22px; font-size:12px; font-weight:700; color:var(--loose-text); letter-spacing:0.5px; text-transform:uppercase; transition:color 0.6s ease; }
+
+  .back-link{ margin-top:34px; font-size:12px; color:var(--loose-text); opacity:0.75; text-decoration:none; border-bottom:1px dashed var(--loose-text); }
+</style>
+</head>
+<body class="mood-happy">
+
+<div id="particle-layer"></div>
+
+<div class="page">
+
+  <header>
+    <p class="names">Zach<span class="amp">&amp;</span>Holly</p>
+    <div class="private-tag">🔒 Zach's private view</div>
+  </header>
+
+  <div class="live-row"><span class="status-dot"></span>Live</div>
+
+  <p class="section-title">How Holly's Feeling</p>
+  <p class="mood-label" id="moodLabel">Loading…</p>
+  <p class="updated-at" id="updatedAt"></p>
+
+  <div class="face-wrap" id="face" role="img" aria-label="Face showing Holly's current mood">
+    <svg viewBox="38 28 224 224" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="140" r="92" fill="#FFFFFF" stroke="#2B2320" stroke-width="5"/>
+      <ellipse cx="102" cy="168" rx="17" ry="10" fill="#FFC3D0" opacity="0.8"/>
+      <ellipse cx="198" cy="168" rx="17" ry="10" fill="#FFC3D0" opacity="0.8"/>
+
+      <g class="face active" data-mood="happy">
+        <circle cx="118" cy="140" r="8" fill="#2B2320"/>
+        <circle cx="182" cy="140" r="8" fill="#2B2320"/>
+        <circle cx="121" cy="137" r="2.6" fill="#FFFFFF"/>
+        <circle cx="185" cy="137" r="2.6" fill="#FFFFFF"/>
+        <path d="M133 168 Q141 177 150 170 Q159 177 167 168" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <g class="face" data-mood="tired">
+        <path d="M102 120 Q118 116 134 121" stroke="#2B2320" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <path d="M198 120 Q182 116 166 121" stroke="#2B2320" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <path d="M104 136 Q118 144 132 136" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M196 136 Q182 144 168 136" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="150" cy="176" rx="11" ry="14" fill="#FFD3DC" stroke="#2B2320" stroke-width="3"/>
+        <ellipse cx="150" cy="185" rx="5" ry="5" fill="#FF8FA8"/>
+      </g>
+
+      <g class="face" data-mood="sad">
+        <circle cx="118" cy="144" r="7" fill="#2B2320"/>
+        <circle cx="182" cy="144" r="7" fill="#2B2320"/>
+        <path d="M104 120 Q118 112 128 118" stroke="#2B2320" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M196 120 Q182 112 172 118" stroke="#2B2320" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M118 154 C112 163 112 172 118 179 C124 172 124 163 118 154 Z" fill="#6FA3D1"/>
+        <path d="M135 176 Q150 165 165 176" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <g class="face" data-mood="mad">
+        <path d="M99 116 Q116 122 131 128" stroke="#2B2320" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M201 116 Q184 122 169 128" stroke="#2B2320" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M107 138 Q118 144 129 140" stroke="#2B2320" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M193 138 Q182 144 171 140" stroke="#2B2320" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M138 175 Q150 172 162 175" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M220 76 L230 86 M230 76 L220 86" stroke="#FF6B4A" stroke-width="4" stroke-linecap="round"/>
+      </g>
+
+      <g class="face" data-mood="hungry">
+        <path d="M104 138 Q118 132 132 138" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M196 138 Q182 132 168 138" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="150" cy="177" rx="12" ry="15" fill="#FFD3DC" stroke="#2B2320" stroke-width="3"/>
+        <ellipse cx="150" cy="187" rx="5" ry="5" fill="#FF8FA8"/>
+        <path d="M164 182 q4 5 0 9" stroke="#8FD3FF" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
+      </g>
+
+      <g class="face" data-mood="sleepy">
+        <path d="M103 138 Q118 130 133 138" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M197 138 Q182 130 167 138" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="150" cy="175" rx="6" ry="5" fill="#FFD3DC" stroke="#2B2320" stroke-width="2.5"/>
+        <text x="196" y="88" font-family="Baloo 2, cursive" font-weight="700" font-size="20" fill="#9E90D8">Z</text>
+        <text x="212" y="74" font-family="Baloo 2, cursive" font-weight="700" font-size="15" fill="#9E90D8">z</text>
+        <text x="224" y="62" font-family="Baloo 2, cursive" font-weight="700" font-size="11" fill="#9E90D8">z</text>
+      </g>
+
+      <g class="face" data-mood="excited">
+        <circle cx="118" cy="140" r="8.5" fill="#2B2320"/>
+        <circle cx="182" cy="140" r="8.5" fill="#2B2320"/>
+        <circle cx="115" cy="137" r="3" fill="#FFFFFF"/>
+        <circle cx="179" cy="137" r="3" fill="#FFFFFF"/>
+        <circle cx="121" cy="143" r="1.4" fill="#FFFFFF"/>
+        <circle cx="185" cy="143" r="1.4" fill="#FFFFFF"/>
+        <path d="M128 167 Q128 191 150 191 Q172 191 172 167 Q150 179 128 167 Z" fill="#FFD3DC" stroke="#2B2320" stroke-width="3"/>
+        <ellipse cx="150" cy="184" rx="6" ry="5" fill="#FF8FA8"/>
+        <path d="M58 66 L61 74 L69 74 L62.5 78.5 L65 86.5 L58 82 L51 86.5 L53.5 78.5 L47 74 L55 74 Z" fill="#FFEE9E"/>
+        <path d="M248 96 L251 102 L257 102 L252 106 L254 112 L248 108 L242 112 L244 106 L239 102 L245 102 Z" fill="#FFEE9E"/>
+      </g>
+
+      <g class="face" data-mood="naughty">
+        <path d="M102 140 Q118 149 134 139" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="177" cy="141" r="8" fill="#2B2320"/>
+        <circle cx="174" cy="138" r="2.6" fill="#FFFFFF"/>
+        <path d="M170 116 Q184 108 199 115" stroke="#2B2320" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M133 173 Q148 181 166 165" stroke="#2B2320" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="bubble">
+    <p id="suggestionText">Checking in on her mood…</p>
+  </div>
+
+  <a class="back-link" href="index.html">back to our page</a>
+
+</div>
+
+<script>
+  var SUPABASE_URL = "https://knxaqkhoyabptcpgaedr.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtueGFxa2hveWFicHRjcGdhZWRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NDUyMTUsImV4cCI6MjEwMDAyMTIxNX0.DD8aTYwjuzMrfYeYOdAn_mgHboC-_IU6Zen3RUSwvBc";
+
+  (function(){
+    var moods = {
+      happy:   { particles: ['💕','💗','🩷','💖'], label: 'Happy', suggestion: "She's happy! Keep being wonderful 💕" },
+      tired:   { particles: ['💤'], label: 'Tired', suggestion: "She's tired — maybe let her rest 🤍" },
+      sad:     { particles: ['💧','🩵'], label: 'Sad', suggestion: "She's sad — she might need a hug 💙" },
+      mad:     { particles: ['💢'], label: 'Mad', suggestion: "She's upset — tread gently, and check in 🔥" },
+      hungry:  { particles: ['🍙','🍡','🍜'], label: 'Hungry', suggestion: "She's hungry — feed her! 🍙" },
+      sleepy:  { particles: ['⭐','🌙','💤'], label: 'Sleepy', suggestion: "She's sleepy — let her nap 🌙" },
+      excited: { particles: ['✨','🎉','⭐','💛'], label: 'Excited', suggestion: "She's excited — celebrate with her! 🎉" },
+      naughty: { particles: ['💜','😏'], label: 'Naughty', suggestion: "She's feeling mischievous 😏 watch out" }
+    };
+
+    var body = document.body;
+    var face = document.getElementById('face');
+    var faceGroups = document.querySelectorAll('.face');
+    var moodLabel = document.getElementById('moodLabel');
+    var updatedAtEl = document.getElementById('updatedAt');
+    var suggestionText = document.getElementById('suggestionText');
+    var currentParticles = ['💕','💗','🩷','💖'];
+    var currentMood = null;
+    var lastUpdatedIso = null;
+
+    function applyMood(mood, bounce){
+      var config = moods[mood];
+      if (!config) return;
+
+      body.className = 'mood-' + mood;
+      faceGroups.forEach(function(g){ g.classList.toggle('active', g.dataset.mood === mood); });
+      currentParticles = config.particles;
+      moodLabel.textContent = config.label;
+      suggestionText.textContent = config.suggestion;
+
+      if (bounce){
+        face.classList.remove('bounce');
+        void face.offsetWidth;
+        face.classList.add('bounce');
+      }
+    }
+
+    var particleLayer = document.getElementById('particle-layer');
+    function spawnParticle(){
+      var el = document.createElement('div');
+      el.className = 'floating-particle';
+      var set = currentParticles;
+      el.textContent = set[Math.floor(Math.random() * set.length)];
+      var left = Math.random() * 100;
+      var duration = 7 + Math.random() * 6;
+      var size = 14 + Math.random() * 16;
+      var drift = (Math.random() * 80 - 40) + 'px';
+      el.style.left = left + 'vw';
+      el.style.fontSize = size + 'px';
+      el.style.setProperty('--drift', drift);
+      el.style.animationDuration = duration + 's';
+      particleLayer.appendChild(el);
+      setTimeout(function(){ el.remove(); }, duration * 1000 + 200);
+    }
+    setInterval(spawnParticle, 900);
+    for (var i = 0; i < 4; i++){ setTimeout(spawnParticle, i * 300); }
+
+    function timeAgo(iso){
+      var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+      if (diff < 10) return 'just now';
+      if (diff < 60) return diff + 's ago';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return Math.floor(diff / 86400) + 'd ago';
+    }
+
+    function refreshTimestamp(){
+      if (lastUpdatedIso){
+        updatedAtEl.textContent = 'updated ' + timeAgo(lastUpdatedIso);
+      }
+    }
+    setInterval(refreshTimestamp, 15000);
+
+    function fetchMood(){
+      fetch(SUPABASE_URL + '/rest/v1/mood_state?id=eq.1&select=mood,updated_at', {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
+      })
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        if (data && data[0]){
+          var mood = data[0].mood;
+          lastUpdatedIso = data[0].updated_at;
+          refreshTimestamp();
+          if (mood !== currentMood){
+            var isFirstLoad = (currentMood === null);
+            currentMood = mood;
+            applyMood(mood, !isFirstLoad);
+          }
+        }
+      })
+      .catch(function(){
+        if (currentMood === null){
+          moodLabel.textContent = 'Offline';
+          suggestionText.textContent = "Can't reach her mood right now — check your connection.";
+        }
+      });
+    }
+
+    fetchMood();
+    setInterval(fetchMood, 4000);
+  })();
+</script>
+
+</body>
+</html>
