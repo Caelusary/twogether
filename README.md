@@ -27,8 +27,6 @@ A small personalized "1 Month Anniversary" website for a couple (Zach & Holly), 
 
 - **`zach.html`** — A private, read-only view (linked faintly from the main page as "Zach's secret view") that displays Holly's currently-set mood, polling the same Supabase `mood_state` table every 4 seconds to show a near-real-time mood, a matching face illustration, a suggested response message, and a "time ago" timestamp of the last update.
 
-- **`bear_test.html`** — A standalone SVG illustration (a gooey-blob bear design test using an SVG goo filter). It is **not linked from any other page** and appears to be leftover design/scratch work rather than part of the live site.
-
 ## Tech stack
 
 - Static HTML, CSS, and vanilla JavaScript — no build step, bundler, or package manager (no `package.json` in this repo).
