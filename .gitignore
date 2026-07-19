@@ -1,0 +1,6 @@
+# Local Claude Code tooling config (machine-specific)
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
