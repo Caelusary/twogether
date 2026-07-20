@@ -3,10 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zach & Holly — 1 Month 👀💕</title>
+<title>Twogether 👀💕</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script
+  src="https://browser.sentry-cdn.com/10.67.0/bundle.min.js"
+  integrity="sha384-XcUJj5iqu49IW8uRaR1JR5XT+Hri4IQkCDLt1Ek9li1Qby2ef+35Ur6/7QXwh1VF"
+  crossorigin="anonymous"
+></script>
+<script>
+  Sentry.init({ dsn: "https://d22229fe31d1c4d9683482cb0cb69231@o4511733518172160.ingest.us.sentry.io/4511768120000512" });
+</script>
 <script>
   if (localStorage.getItem('monthsaryIntroSeen') === '1') {
     document.documentElement.classList.add('skip-intro');
@@ -36,6 +44,53 @@
     display:flex; justify-content:center;
     min-height:100vh; position:relative; overflow-x:hidden;
   }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    opacity:0.05; mix-blend-mode:multiply;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    box-shadow: inset 0 0 140px rgba(60,40,30,0.12);
+  }
+
+  .site-nav{
+    position:relative; z-index:2; display:inline-flex; gap:4px; margin-top:16px;
+    background:rgba(255,255,255,0.55); padding:5px; border-radius:999px; backdrop-filter:blur(6px);
+  }
+  .site-nav a{
+    padding:7px 16px; border-radius:999px; font-family:'Baloo 2',cursive; font-weight:600; font-size:13px;
+    color:var(--loose-text); text-decoration:none; transition:background .25s ease, color .25s ease;
+    cursor:pointer;
+  }
+  .site-nav a.current{ background:var(--white); color:var(--accent); box-shadow:0 3px 8px rgba(0,0,0,0.1); }
+
+  .home-kicker{
+    font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--loose-text); opacity:0.75; margin:0 0 4px; transition:color 0.6s ease;
+  }
+  .since-date{ margin-top:2px; font-size:12px; color:var(--loose-text); opacity:0.7; transition:color 0.6s ease; }
+
+  .edit-date-btn{
+    margin-top:4px; background:none; border:none; font-size:11px; color:var(--loose-text);
+    text-decoration:underline; cursor:pointer; opacity:0.75; font-family:'Quicksand',sans-serif; padding:2px;
+  }
+  .date-edit-row{ margin-top:8px; display:none; gap:6px; align-items:center; justify-content:center; flex-wrap:wrap; }
+  .date-edit-row.show{ display:flex; }
+  .date-edit-row input[type="date"]{
+    padding:6px 10px; border-radius:10px; border:2px solid #EFE3DA; font-family:'Quicksand',sans-serif; font-size:13px;
+    background:#FBF6F1; color:var(--brown);
+  }
+  .date-edit-row button{
+    padding:6px 14px; border-radius:999px; border:none; font-family:'Baloo 2',cursive; font-weight:700; font-size:12px; cursor:pointer;
+  }
+  #saveDateBtn{ background:var(--accent); color:#fff; }
+  #cancelDateBtn{ background:#EFE3DA; color:var(--brown); }
+  .date-edit-msg{ margin-top:6px; font-size:11.5px; color:#E8483D; min-height:14px; }
+
+  .milestones{ margin-top:12px; display:flex; flex-direction:column; gap:4px; }
+  .milestone-line{ font-size:12.5px; color:var(--loose-text); margin:0; transition:color 0.6s ease; }
+  .milestone-line.today{ color:var(--accent); font-weight:700; }
 
   #particle-layer{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
   .floating-particle{
@@ -137,6 +192,22 @@
   }
   .playground-link:active{ transform:scale(0.95); }
 
+  /* ---------------- partner section / invite-code prompt ---------------- */
+  .partner-card, .invite-card{
+    margin-top:28px; width:100%; background:var(--white); border-radius:22px; padding:20px 22px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.1); display:none;
+  }
+  .partner-card.show, .invite-card.show{ display:block; }
+  .partner-card h2, .invite-card h2{ font-family:'Baloo 2',cursive; font-size:16px; color:var(--accent); margin:0 0 8px; transition:color 0.6s ease; }
+  .partner-row{ display:flex; align-items:center; gap:12px; }
+  .partner-emoji{ font-size:34px; }
+  .partner-note{ font-size:13.5px; color:var(--brown); text-align:left; line-height:1.4; }
+  .invite-card p{ font-size:13px; color:var(--loose-text); margin:0 0 10px; }
+  .invite-code{
+    display:inline-block; font-family:'Baloo 2',cursive; font-weight:700; font-size:24px; letter-spacing:3px;
+    background:#FBF6F1; border:2px dashed var(--accent); border-radius:14px; padding:10px 20px; color:var(--accent);
+  }
+
   .gallery{ margin-top:32px; width:100%; }
   .gallery h2{ font-family:'Baloo 2',cursive; font-size:clamp(18px,5vw,22px); color:var(--accent); margin:0 0 16px; transition:color 0.6s ease; }
   .photo-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
@@ -144,21 +215,34 @@
     width:106px; height:106px; border-radius:20px; background:var(--white); border:2px dashed var(--accent);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
     color:var(--accent); font-size:11px; font-weight:600; overflow:hidden; transition:border-color 0.6s ease,color 0.6s ease;
+    position:relative;
   }
-  .photo-slot img{ width:100%; height:100%; object-fit:cover; border-radius:18px; }
+  .photo-slot img{ width:100%; height:100%; object-fit:cover; border-radius:18px; cursor:pointer; }
   .photo-slot svg{ width:28px; height:28px; opacity:0.7; }
   .photo-slot.add-slot{ cursor:pointer; }
   .photo-slot.add-slot:active{ transform:scale(0.95); }
   .photo-slot.uploading{ opacity:0.55; pointer-events:none; }
-  .photo-slot .spinner{
-    width:22px; height:22px; border:3px solid var(--accent); border-top-color:transparent;
-    border-radius:50%; animation:spin 0.8s linear infinite;
-  }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
   .gallery-hint{ margin-top:10px; min-height:14px; font-size:11.5px; color:var(--loose-text); opacity:0.8; transition:color 0.6s ease; }
 
-  .zach-link{
-    margin-top:26px; font-size:12px; color:var(--loose-text); opacity:0.75; text-decoration:none; border-bottom:1px dashed var(--loose-text);
+  .photo-delete{
+    position:absolute; top:5px; right:5px; width:22px; height:22px; border-radius:50%;
+    background:rgba(30,20,18,0.55); color:#fff; border:none; display:flex; align-items:center; justify-content:center;
+    font-size:12px; line-height:1; cursor:pointer; z-index:2; transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .photo-delete:active{ transform:scale(0.9); }
+  .photo-delete.confirm{ background:#E8483D; width:auto; padding:0 8px; font-size:10.5px; font-weight:700; }
+
+  .lightbox{
+    position:fixed; inset:0; z-index:100; background:rgba(20,14,12,0.86);
+    display:flex; align-items:center; justify-content:center; padding:28px;
+    opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+  }
+  .lightbox.show{ opacity:1; pointer-events:auto; }
+  .lightbox img{ max-width:100%; max-height:100%; border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+  .lightbox-close{
+    position:absolute; top:18px; right:18px; width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,0.92); border:none; font-size:17px; cursor:pointer; color:var(--brown);
+    display:flex; align-items:center; justify-content:center;
   }
 
   footer{ margin-top:30px; font-size:13px; color:var(--loose-text); opacity:0.9; transition:color 0.6s ease; }
@@ -180,9 +264,27 @@
 <div class="page" id="page">
 
   <header>
-    <p class="names">Zach<span class="amp">&amp;</span>Holly</p>
-    <div class="badge">👀 1 Month Together 💕</div>
-    <p class="since">Since June 18, 2026</p>
+    <p class="home-kicker">💞 twogether</p>
+    <p class="names" id="namesHeading">Loading<span class="amp">&amp;</span>...</p>
+    <div class="badge" id="badge">👀 together 💕</div>
+    <p class="since" id="sinceCounter">counting our days...</p>
+    <p class="since-date" id="sinceDate"></p>
+    <button type="button" class="edit-date-btn" id="editDateBtn">✏️ edit our date</button>
+    <div class="date-edit-row" id="dateEditRow">
+      <input type="date" id="sinceDateInput">
+      <button type="button" id="saveDateBtn">Save</button>
+      <button type="button" id="cancelDateBtn">Cancel</button>
+    </div>
+    <p class="date-edit-msg" id="dateEditMsg"></p>
+    <div class="milestones" id="milestones">
+      <p class="milestone-line" id="monthsaryLine"></p>
+      <p class="milestone-line" id="anniversaryLine"></p>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html" class="current">🏡 Home</a>
+      <a href="playground.html">🎈 Playground</a>
+      <a id="logoutLink">🚪 Log out</a>
+    </nav>
   </header>
 
   <p class="prompt" id="prompt">How are you feeling today, love?</p>
@@ -205,6 +307,20 @@
     </div>
   </section>
 
+  <section class="partner-card" id="partnerCard">
+    <h2 id="partnerHeading">How's my love feeling?</h2>
+    <div class="partner-row">
+      <span class="partner-emoji" id="partnerEmoji">😊</span>
+      <p class="partner-note" id="partnerNote">—</p>
+    </div>
+  </section>
+
+  <section class="invite-card" id="inviteCard">
+    <h2>Waiting for your partner 💌</h2>
+    <p>Share this code with them — they enter it when they sign up, and you'll be paired.</p>
+    <div class="invite-code" id="inviteCode">------</div>
+  </section>
+
   <a class="playground-link" href="playground.html">🎈 Visit our Playground</a>
 
   <section class="gallery">
@@ -219,251 +335,467 @@
     <p class="gallery-hint" id="galleryHint"></p>
   </section>
 
+  <div class="lightbox" id="lightbox">
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+    <img id="lightboxImg" src="" alt="A memory, enlarged">
+  </div>
+
   <footer>
     <p>every mood, every month — it's you I choose</p>
-    <p class="signature">— Zach 👀💕</p>
-    <a class="zach-link" href="zach.html">psst, Zach's secret view 👀</a>
+    <p class="signature">👀💕</p>
   </footer>
 
 </div>
 
-<script>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
   var SUPABASE_URL = "https://knxaqkhoyabptcpgaedr.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtueGFxa2hveWFicHRjcGdhZWRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NDUyMTUsImV4cCI6MjEwMDAyMTIxNX0.DD8aTYwjuzMrfYeYOdAn_mgHboC-_IU6Zen3RUSwvBc";
+  var supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  function pushMood(mood){
-    fetch(SUPABASE_URL + '/rest/v1/mood_state?on_conflict=id', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
-      body: JSON.stringify([{ id: 1, mood: mood, updated_at: new Date().toISOString() }])
-    }).catch(function(){ /* offline is fine, local state still works */ });
+  var moods = {
+    happy:   { particles: ['💕','💗','🩷','💖'], messages: [
+      "Seeing you this happy makes my whole day brighter. Your smile is my favorite thing in the world 💕",
+      "That's the smile I fell for. Stay this happy forever, okay?"
+    ]},
+    tired:   { particles: ['💤'], messages: [
+      "Aww, my tired love. Go rest for a bit — I'll be right here when you wake up 🤍",
+      "You've been doing so much. Put your feet up, I've got you covered."
+    ]},
+    sad:     { particles: ['💧','🩵'], messages: [
+      "I wish I could hug you through the screen right now. Whatever it is, we'll get through it together 🫂",
+      "Come here, love. I'm not going anywhere. Talk to me whenever you're ready."
+    ]},
+    mad:     { particles: ['💢'], messages: [
+      "Uh oh, someone's fired up 🔥 I'm sorry if I did something — tell me what's wrong so I can fix it.",
+      "Okay okay, I hear you. Let it out, I'm listening."
+    ]},
+    hungry:  { particles: ['🍙','🍡','🍜'], messages: [
+      "Let's get you fed immediately! What are you craving? I'd teleport you food if I could 🍙",
+      "My hungry love! Go grab a snack, you'll feel so much better."
+    ]},
+    sleepy:  { particles: ['⭐','🌙','💤'], messages: [
+      "Sweet dreams, sleepyhead. Close those eyes, I've got you. Dream about us, okay? 🌙",
+      "Go curl up and rest, love. I'll be the last thing on your mind and the first thing tomorrow."
+    ]},
+    excited: { particles: ['✨','🎉','⭐','💛'], messages: [
+      "YESS I love this energy!! Tell me everything, I'm so excited with you!! 🎉",
+      "There's that spark I adore. Let's celebrate whatever this is!"
+    ]},
+    naughty: { particles: ['💜','😏'], messages: [
+      "Ooooh, look who's being a little troublemaker today 😏 I like it.",
+      "Uh oh. What are you up to, mischief maker?"
+    ]}
+  };
+  var moodEmoji = { happy:'😊', tired:'🥱', sad:'😢', mad:'😠', hungry:'🍙', sleepy:'😴', excited:'🤩', naughty:'😏' };
+  var partnerSuggestions = {
+    happy: "{name} is happy! Keep being wonderful together 💕",
+    tired: "{name} is tired — maybe let them rest 🤍",
+    sad: "{name} is sad — they might need a hug 💙",
+    mad: "{name} is upset — tread gently, and check in 🔥",
+    hungry: "{name} is hungry — feed them! 🍙",
+    sleepy: "{name} is sleepy — let them nap 🌙",
+    excited: "{name} is excited — celebrate with them! 🎉",
+    naughty: "{name} is feeling mischievous 😏"
+  };
+
+  var body = document.body;
+  var bubble = document.getElementById('bubble');
+  var bubbleText = document.getElementById('bubbleText');
+  var moodButtons = document.querySelectorAll('.mood-btn');
+  var currentParticles = ['💕','💗','🩷','💖'];
+  var lastMessageIndex = -1;
+
+  var myUserId = null;
+  var myProfile = null;
+  var pairInfo = null;
+  var partnerProfile = null;
+
+  function pickMessage(list){
+    if (list.length === 1) return list[0];
+    var idx;
+    do { idx = Math.floor(Math.random() * list.length); } while (idx === lastMessageIndex);
+    lastMessageIndex = idx;
+    return list[idx];
   }
 
-  (function(){
-    var moods = {
-      happy:   { particles: ['💕','💗','🩷','💖'], messages: [
-        "Seeing you this happy makes my whole day brighter. Your smile is my favorite thing in the world 💕",
-        "That's the smile I fell for. Stay this happy forever, okay?"
-      ]},
-      tired:   { particles: ['💤'], messages: [
-        "Aww, my tired love. Go rest for a bit — I'll be right here when you wake up 🤍",
-        "You've been doing so much. Put your feet up, I've got you covered."
-      ]},
-      sad:     { particles: ['💧','🩵'], messages: [
-        "I wish I could hug you through the screen right now. Whatever it is, we'll get through it together 🫂",
-        "Come here, love. I'm not going anywhere. Talk to me whenever you're ready."
-      ]},
-      mad:     { particles: ['💢'], messages: [
-        "Uh oh, someone's fired up 🔥 I'm sorry if I did something — tell me what's wrong so I can fix it.",
-        "Okay okay, I hear you. Let it out, I'm listening."
-      ]},
-      hungry:  { particles: ['🍙','🍡','🍜'], messages: [
-        "Let's get you fed immediately! What are you craving? I'd teleport you food if I could 🍙",
-        "My hungry love! Go grab a snack, you'll feel so much better."
-      ]},
-      sleepy:  { particles: ['⭐','🌙','💤'], messages: [
-        "Sweet dreams, sleepyhead. Close those eyes, I've got you. Dream about us, okay? 🌙",
-        "Go curl up and rest, love. I'll be the last thing on your mind and the first thing tomorrow."
-      ]},
-      excited: { particles: ['✨','🎉','⭐','💛'], messages: [
-        "YESS I love this energy!! Tell me everything, I'm so excited with you!! 🎉",
-        "There's that spark I adore. Let's celebrate whatever this is!"
-      ]},
-      naughty: { particles: ['💜','😏'], messages: [
-        "Ooooh, look who's being a little troublemaker today 😏 I like it.",
-        "Uh oh. What are you up to, mischief maker?"
-      ]}
+  var particleLayer = document.getElementById('particle-layer');
+  function spawnParticle(){
+    var el = document.createElement('div');
+    el.className = 'floating-particle';
+    var set = currentParticles;
+    el.textContent = set[Math.floor(Math.random() * set.length)];
+    var left = Math.random() * 100;
+    var duration = 7 + Math.random() * 6;
+    var size = 14 + Math.random() * 16;
+    var drift = (Math.random() * 80 - 40) + 'px';
+    el.style.left = left + 'vw';
+    el.style.fontSize = size + 'px';
+    el.style.setProperty('--drift', drift);
+    el.style.animationDuration = duration + 's';
+    particleLayer.appendChild(el);
+    setTimeout(function(){ el.remove(); }, duration * 1000 + 200);
+  }
+  setInterval(spawnParticle, 900);
+  for (var i = 0; i < 4; i++){ setTimeout(spawnParticle, i * 300); }
+  function spawnBurst(){ for (var j = 0; j < 6; j++){ setTimeout(spawnParticle, j * 60); } }
+
+  function applyMood(mood, opts){
+    opts = opts || {};
+    var config = moods[mood];
+    if (!config) return;
+
+    body.className = 'mood-' + mood;
+    moodButtons.forEach(function(btn){ btn.classList.toggle('active', btn.dataset.mood === mood); });
+    currentParticles = config.particles;
+    bubbleText.textContent = opts.deterministic ? config.messages[0] : pickMessage(config.messages);
+    bubble.classList.add('show');
+    if (!opts.silent) spawnBurst();
+
+    try { localStorage.setItem('monthsaryMood', mood); } catch (e) {}
+
+    if (myUserId && !opts.fromRemote){
+      supabase.from('mood_state').upsert({ user_id: myUserId, mood: mood, updated_at: new Date().toISOString() }).then(function(){});
+    }
+  }
+
+  moodButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){ applyMood(btn.dataset.mood); });
+  });
+
+  // ---------------- partner section ----------------
+  var partnerCard = document.getElementById('partnerCard');
+  var inviteCard = document.getElementById('inviteCard');
+  var partnerHeading = document.getElementById('partnerHeading');
+  var partnerEmoji = document.getElementById('partnerEmoji');
+  var partnerNote = document.getElementById('partnerNote');
+  var inviteCode = document.getElementById('inviteCode');
+
+  function renderPartnerMood(mood){
+    var m = mood || 'happy';
+    partnerEmoji.textContent = moodEmoji[m] || '😊';
+    partnerNote.textContent = (partnerSuggestions[m] || '').replace('{name}', partnerProfile.display_name || 'Your partner');
+  }
+
+  async function refreshPartnerSection(){
+    if (!partnerProfile){
+      inviteCard.classList.add('show');
+      partnerCard.classList.remove('show');
+      inviteCode.textContent = pairInfo ? pairInfo.invite_code : '------';
+      return;
+    }
+    inviteCard.classList.remove('show');
+    partnerCard.classList.add('show');
+    partnerHeading.textContent = "How's " + partnerProfile.display_name + " feeling?";
+    var { data: row } = await supabase.from('mood_state').select('mood').eq('user_id', partnerProfile.user_id).maybeSingle();
+    renderPartnerMood(row ? row.mood : 'happy');
+  }
+
+  // ---------------- live "days together" counter ----------------
+  var sinceCounterEl = document.getElementById('sinceCounter');
+  var sinceDateEl = document.getElementById('sinceDate');
+  function updateDaysTogether(sinceDateStr){
+    if (!sinceCounterEl || !sinceDateStr) return;
+    var start = new Date(sinceDateStr + 'T00:00:00');
+    var days = Math.floor((Date.now() - start.getTime()) / 86400000);
+    if (days < 0) days = 0;
+    sinceCounterEl.textContent = days + (days === 1 ? ' day' : ' days') + ' together and counting 💗';
+    var months = Math.floor(days / 30);
+    document.getElementById('badge').textContent = '👀 ' + (months >= 1 ? (months + (months === 1 ? ' Month' : ' Months')) : days + (days === 1 ? ' Day' : ' Days')) + ' Together 💕';
+    sinceDateEl.textContent = 'since ' + start.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+  }
+
+  // ---------------- monthsary / anniversary calculation ----------------
+  function fmtMonthDay(d){
+    return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+  }
+
+  function computeMilestones(sinceDateStr){
+    var start = new Date(sinceDateStr + 'T00:00:00');
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    var startDay = start.getDate();
+
+    var months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    if (now.getDate() < startDay) months--;
+    if (months < 0) months = 0;
+
+    var nextMonthsary = new Date(now.getFullYear(), now.getMonth(), startDay);
+    if (nextMonthsary.getTime() < now.getTime()) nextMonthsary = new Date(now.getFullYear(), now.getMonth() + 1, startDay);
+
+    var nextAnniversary = new Date(now.getFullYear(), start.getMonth(), startDay);
+    if (nextAnniversary.getTime() < now.getTime()) nextAnniversary = new Date(now.getFullYear() + 1, start.getMonth(), startDay);
+
+    return {
+      months: months,
+      nextMonthsary: nextMonthsary,
+      daysUntilMonthsary: Math.round((nextMonthsary.getTime() - now.getTime()) / 86400000),
+      monthsaryToday: nextMonthsary.getTime() === now.getTime(),
+      nextAnniversary: nextAnniversary,
+      daysUntilAnniversary: Math.round((nextAnniversary.getTime() - now.getTime()) / 86400000),
+      anniversaryToday: nextAnniversary.getTime() === now.getTime()
     };
+  }
 
-    var body = document.body;
-    var bubble = document.getElementById('bubble');
-    var bubbleText = document.getElementById('bubbleText');
-    var moodButtons = document.querySelectorAll('.mood-btn');
-    var currentParticles = ['💕','💗','🩷','💖'];
-    var lastMessageIndex = -1;
+  function renderMilestones(sinceDateStr){
+    if (!sinceDateStr) return;
+    var m = computeMilestones(sinceDateStr);
+    var monthsaryLine = document.getElementById('monthsaryLine');
+    var anniversaryLine = document.getElementById('anniversaryLine');
 
-    function pickMessage(list){
-      if (list.length === 1) return list[0];
-      var idx;
-      do { idx = Math.floor(Math.random() * list.length); } while (idx === lastMessageIndex);
-      lastMessageIndex = idx;
-      return list[idx];
+    if (m.monthsaryToday && m.months >= 1){
+      monthsaryLine.textContent = '🎉 Happy ' + m.months + '-month monthsary today!';
+      monthsaryLine.classList.add('today');
+    } else {
+      monthsaryLine.textContent = '🎂 Next monthsary: ' + fmtMonthDay(m.nextMonthsary) + ' (in ' + m.daysUntilMonthsary + (m.daysUntilMonthsary === 1 ? ' day)' : ' days)');
+      monthsaryLine.classList.remove('today');
     }
 
-    var particleLayer = document.getElementById('particle-layer');
-
-    function spawnParticle(){
-      var el = document.createElement('div');
-      el.className = 'floating-particle';
-      var set = currentParticles;
-      el.textContent = set[Math.floor(Math.random() * set.length)];
-      var left = Math.random() * 100;
-      var duration = 7 + Math.random() * 6;
-      var size = 14 + Math.random() * 16;
-      var drift = (Math.random() * 80 - 40) + 'px';
-      el.style.left = left + 'vw';
-      el.style.fontSize = size + 'px';
-      el.style.setProperty('--drift', drift);
-      el.style.animationDuration = duration + 's';
-      particleLayer.appendChild(el);
-      setTimeout(function(){ el.remove(); }, duration * 1000 + 200);
+    if (m.anniversaryToday && m.months >= 12){
+      var years = Math.round(m.months / 12);
+      anniversaryLine.textContent = '💍 Happy ' + years + '-year anniversary today!';
+      anniversaryLine.classList.add('today');
+    } else {
+      anniversaryLine.textContent = '💍 Next anniversary: ' + fmtMonthDay(m.nextAnniversary) + ' (in ' + m.daysUntilAnniversary + (m.daysUntilAnniversary === 1 ? ' day)' : ' days)');
+      anniversaryLine.classList.remove('today');
     }
+  }
 
-    setInterval(spawnParticle, 900);
-    for (var i = 0; i < 4; i++){ setTimeout(spawnParticle, i * 300); }
+  // ---------------- editing the relationship date ----------------
+  var editDateBtn = document.getElementById('editDateBtn');
+  var dateEditRow = document.getElementById('dateEditRow');
+  var sinceDateInput = document.getElementById('sinceDateInput');
+  var saveDateBtn = document.getElementById('saveDateBtn');
+  var cancelDateBtn = document.getElementById('cancelDateBtn');
+  var dateEditMsg = document.getElementById('dateEditMsg');
 
-    function spawnBurst(){ for (var i = 0; i < 6; i++){ setTimeout(spawnParticle, i * 60); } }
-
-    function applyMood(mood, opts){
-      opts = opts || {};
-      var config = moods[mood];
-      if (!config) return;
-
-      body.className = 'mood-' + mood;
-
-      moodButtons.forEach(function(btn){ btn.classList.toggle('active', btn.dataset.mood === mood); });
-
-      currentParticles = config.particles;
-
-      bubbleText.textContent = opts.deterministic ? config.messages[0] : pickMessage(config.messages);
-      bubble.classList.add('show');
-
-      if (!opts.silent){
-        spawnBurst();
-      }
-
-      try { localStorage.setItem('monthsaryMood', mood); } catch (e) {}
-      pushMood(mood);
+  editDateBtn.addEventListener('click', function(){
+    sinceDateInput.value = pairInfo ? pairInfo.since_date : '';
+    dateEditMsg.textContent = '';
+    dateEditRow.classList.add('show');
+    editDateBtn.style.display = 'none';
+  });
+  cancelDateBtn.addEventListener('click', function(){
+    dateEditRow.classList.remove('show');
+    editDateBtn.style.display = '';
+  });
+  saveDateBtn.addEventListener('click', async function(){
+    var newDate = sinceDateInput.value;
+    if (!newDate) return;
+    saveDateBtn.disabled = true;
+    var { error } = await supabase.from('pairs').update({ since_date: newDate }).eq('id', pairInfo.id);
+    saveDateBtn.disabled = false;
+    if (error){
+      dateEditMsg.textContent = "Couldn't save that date — try again?";
+      return;
     }
+    pairInfo.since_date = newDate;
+    dateEditRow.classList.remove('show');
+    editDateBtn.style.display = '';
+    updateDaysTogether(newDate);
+    renderMilestones(newDate);
+  });
 
-    moodButtons.forEach(function(btn){
-      btn.addEventListener('click', function(){ applyMood(btn.dataset.mood); });
-    });
+  // ---------------- shared gallery (Supabase Storage, pair-scoped) ----------------
+  var GALLERY_BUCKET = 'gallery-photos';
+  var photoRow = document.getElementById('photoRow');
+  var addPhotoSlot = document.getElementById('addPhotoSlot');
+  var photoInput = document.getElementById('photoInput');
+  var galleryHint = document.getElementById('galleryHint');
 
-    // ---------------- shared gallery (Supabase Storage) ----------------
-    var GALLERY_BUCKET = 'gallery-photos';
-    var photoRow = document.getElementById('photoRow');
-    var addPhotoSlot = document.getElementById('addPhotoSlot');
-    var photoInput = document.getElementById('photoInput');
-    var galleryHint = document.getElementById('galleryHint');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  var lightboxClose = document.getElementById('lightboxClose');
+  function openLightbox(src){ lightboxImg.src = src; lightbox.classList.add('show'); }
+  function closeLightbox(){ lightbox.classList.remove('show'); }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e){ if (e.target === lightbox) closeLightbox(); });
 
-    function publicPhotoUrl(name){
-      return SUPABASE_URL + '/storage/v1/object/public/' + GALLERY_BUCKET + '/' + encodeURIComponent(name);
+  async function deletePhoto(name, slotEl, delBtn){
+    delBtn.disabled = true;
+    slotEl.style.opacity = '0.4';
+    var path = myProfile.pair_id + '/' + name;
+    var { error } = await supabase.storage.from(GALLERY_BUCKET).remove([path]);
+    if (error){
+      slotEl.style.opacity = '1';
+      delBtn.disabled = false;
+      galleryHint.textContent = "Couldn't delete that one — try again? 🥺";
+      return;
     }
+    slotEl.remove();
+    galleryHint.textContent = 'Memory removed 🕊️';
+    setTimeout(function(){ galleryHint.textContent = ''; }, 2000);
+  }
 
-    function renderPhoto(name){
-      var slot = document.createElement('div');
-      slot.className = 'photo-slot';
-      var img = document.createElement('img');
-      img.src = publicPhotoUrl(name);
-      img.alt = 'A memory';
-      img.loading = 'lazy';
-      slot.appendChild(img);
-      photoRow.appendChild(slot);
-    }
+  function renderPhoto(name, url){
+    var slot = document.createElement('div');
+    slot.className = 'photo-slot';
 
-    function loadGallery(){
-      fetch(SUPABASE_URL + '/storage/v1/object/list/' + GALLERY_BUCKET, {
-        method: 'POST',
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prefix: '', limit: 100, sortBy: { column: 'created_at', order: 'desc' } })
-      })
-      .then(function(res){ return res.json(); })
-      .then(function(files){
-        if (!Array.isArray(files)) return;
-        photoRow.querySelectorAll('.photo-slot:not(.add-slot)').forEach(function(el){ el.remove(); });
-        files.forEach(function(f){
-          if (!f || !f.id || !f.name || f.name.charAt(0) === '_') return;
-          renderPhoto(f.name);
-        });
-      })
-      .catch(function(){ /* offline is fine, gallery just stays as-is */ });
-    }
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = 'A memory';
+    img.loading = 'lazy';
+    img.addEventListener('click', function(){ openLightbox(url); });
+    slot.appendChild(img);
 
-    addPhotoSlot.addEventListener('click', function(){ photoInput.click(); });
-
-    photoInput.addEventListener('change', function(){
-      var file = photoInput.files && photoInput.files[0];
-      photoInput.value = '';
-      if (!file) return;
-
-      if (file.type.indexOf('image/') !== 0){
-        galleryHint.textContent = "That doesn't look like a photo — try a different file 💭";
+    var delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'photo-delete';
+    delBtn.textContent = '✕';
+    delBtn.setAttribute('aria-label', 'Delete this memory');
+    delBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (delBtn.classList.contains('confirm')){
+        deletePhoto(name, slot, delBtn);
         return;
       }
-      if (file.size > 10 * 1024 * 1024){
-        galleryHint.textContent = "That photo's a bit too big (max 10MB) — try a smaller one 💭";
-        return;
-      }
-
-      addPhotoSlot.classList.add('uploading');
-      galleryHint.textContent = 'Uploading your memory...';
-
-      var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-      var filename = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
-
-      fetch(SUPABASE_URL + '/storage/v1/object/' + GALLERY_BUCKET + '/' + filename, {
-        method: 'POST',
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
-        body: file
-      })
-      .then(function(res){
-        if (!res.ok) throw new Error('upload failed');
-        galleryHint.textContent = 'Added to our gallery 💕';
-        renderPhoto(filename);
-        setTimeout(function(){ galleryHint.textContent = ''; }, 3000);
-      })
-      .catch(function(){
-        galleryHint.textContent = "Couldn't upload that one — try again? 🥺";
-      })
-      .finally(function(){
-        addPhotoSlot.classList.remove('uploading');
-      });
+      delBtn.classList.add('confirm');
+      delBtn.textContent = 'delete?';
+      clearTimeout(delBtn._resetTimer);
+      delBtn._resetTimer = setTimeout(function(){
+        delBtn.classList.remove('confirm');
+        delBtn.textContent = '✕';
+      }, 2500);
     });
+    slot.appendChild(delBtn);
 
-    loadGallery();
+    photoRow.appendChild(slot);
+  }
 
-    function initMood(){
-      var saved = null;
-      try { saved = localStorage.getItem('monthsaryMood'); } catch (e) {}
-      if (saved && moods[saved]){
-        applyMood(saved, { silent: true, deterministic: true });
-      } else {
-        applyMood('happy', { silent: true, deterministic: true });
-      }
+  async function loadGallery(){
+    var { data: files, error } = await supabase.storage.from(GALLERY_BUCKET).list(myProfile.pair_id, {
+      limit: 100, sortBy: { column: 'created_at', order: 'desc' }
+    });
+    if (error || !files) return;
+    photoRow.querySelectorAll('.photo-slot:not(.add-slot)').forEach(function(el){ el.remove(); });
+    for (var i = 0; i < files.length; i++){
+      var f = files[i];
+      if (!f.id) continue;
+      var path = myProfile.pair_id + '/' + f.name;
+      var { data: signed } = await supabase.storage.from(GALLERY_BUCKET).createSignedUrl(path, 3600);
+      if (signed) renderPhoto(f.name, signed.signedUrl);
+    }
+  }
+
+  addPhotoSlot.addEventListener('click', function(){ photoInput.click(); });
+
+  photoInput.addEventListener('change', async function(){
+    var file = photoInput.files && photoInput.files[0];
+    photoInput.value = '';
+    if (!file) return;
+
+    if (file.type.indexOf('image/') !== 0){
+      galleryHint.textContent = "That doesn't look like a photo — try a different file 💭";
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024){
+      galleryHint.textContent = "That photo's a bit too big (max 10MB) — try a smaller one 💭";
+      return;
     }
 
-    // ---------------- intro sequence: the page wakes up ----------------
-    var html = document.documentElement;
-    var page = document.getElementById('page');
+    addPhotoSlot.classList.add('uploading');
+    galleryHint.textContent = 'Uploading your memory...';
 
+    var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    var filename = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    var path = myProfile.pair_id + '/' + filename;
+
+    var { error } = await supabase.storage.from(GALLERY_BUCKET).upload(path, file);
+    addPhotoSlot.classList.remove('uploading');
+
+    if (error){
+      galleryHint.textContent = error.message && error.message.indexOf('limit') !== -1
+        ? "You've hit the upload limit for now — try again later 🥺"
+        : "Couldn't upload that one — try again? 🥺";
+      return;
+    }
+
+    galleryHint.textContent = 'Added to our gallery 💕';
+    var { data: signed } = await supabase.storage.from(GALLERY_BUCKET).createSignedUrl(path, 3600);
+    if (signed) renderPhoto(filename, signed.signedUrl);
+    setTimeout(function(){ galleryHint.textContent = ''; }, 3000);
+  });
+
+  // ---------------- logout ----------------
+  document.getElementById('logoutLink').addEventListener('click', async function(){
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  // ---------------- intro sequence: the page wakes up ----------------
+  var html = document.documentElement;
+  var page = document.getElementById('page');
+
+  function playIntro(onDone){
     if (html.classList.contains('skip-intro')){
       page.classList.add('reveal');
-      initMood();
-    } else {
-      html.classList.add('intro-lock');
-      var overlay = document.getElementById('intro-overlay');
-      var hiBubble = document.getElementById('hiBubble');
-
-      setTimeout(function(){ overlay.classList.add('eyes-open'); }, 500);
-      setTimeout(function(){ hiBubble.classList.add('show'); }, 1350);
-      setTimeout(function(){
-        overlay.classList.add('blinking');
-        setTimeout(function(){ overlay.classList.remove('blinking'); }, 180);
-      }, 2500);
-      setTimeout(function(){
-        overlay.classList.add('hide');
-        page.classList.add('reveal');
-        try { localStorage.setItem('monthsaryIntroSeen', '1'); } catch (e) {}
-        initMood();
-        setTimeout(function(){ overlay.remove(); html.classList.remove('intro-lock'); }, 750);
-      }, 3400);
+      onDone();
+      return;
     }
+    html.classList.add('intro-lock');
+    var overlay = document.getElementById('intro-overlay');
+    var hiBubble = document.getElementById('hiBubble');
+
+    setTimeout(function(){ overlay.classList.add('eyes-open'); }, 500);
+    setTimeout(function(){ hiBubble.classList.add('show'); }, 1350);
+    setTimeout(function(){
+      overlay.classList.add('blinking');
+      setTimeout(function(){ overlay.classList.remove('blinking'); }, 180);
+    }, 2500);
+    setTimeout(function(){
+      overlay.classList.add('hide');
+      page.classList.add('reveal');
+      try { localStorage.setItem('monthsaryIntroSeen', '1'); } catch (e) {}
+      onDone();
+      setTimeout(function(){ overlay.remove(); html.classList.remove('intro-lock'); }, 750);
+    }, 3400);
+  }
+
+  // ---------------- boot: auth guard, then load everything ----------------
+  (async function boot(){
+    var { data: sessionData } = await supabase.auth.getSession();
+    var session = sessionData && sessionData.session;
+    if (!session){
+      window.location.href = 'login.html';
+      return;
+    }
+    myUserId = session.user.id;
+
+    var { data: profileRow } = await supabase.from('profiles').select('*').eq('user_id', myUserId).maybeSingle();
+    if (!profileRow){
+      var fallbackName = (session.user.email || 'Someone').split('@')[0];
+      var { error: rpcErr } = await supabase.rpc('create_or_join_pair', { p_display_name: fallbackName, p_invite_code: null });
+      if (rpcErr){
+        document.body.innerHTML = '<p style="padding:60px 24px;text-align:center;font-family:Quicksand,sans-serif;">Something went wrong setting up your account — please try logging in again.</p>';
+        return;
+      }
+      var { data: profileRow2 } = await supabase.from('profiles').select('*').eq('user_id', myUserId).single();
+      profileRow = profileRow2;
+    }
+    myProfile = profileRow;
+
+    var { data: pairRow } = await supabase.from('pairs').select('*').eq('id', myProfile.pair_id).maybeSingle();
+    pairInfo = pairRow;
+
+    var { data: partnerRow } = await supabase.from('profiles').select('*').eq('pair_id', myProfile.pair_id).neq('user_id', myUserId).maybeSingle();
+    partnerProfile = partnerRow;
+
+    document.getElementById('namesHeading').innerHTML =
+      (myProfile.display_name || 'You') + '<span class="amp">&amp;</span>' + (partnerProfile ? partnerProfile.display_name : '...');
+
+    if (pairInfo){
+      updateDaysTogether(pairInfo.since_date);
+      renderMilestones(pairInfo.since_date);
+    }
+
+    playIntro(async function(){
+      var { data: myMoodRow } = await supabase.from('mood_state').select('mood').eq('user_id', myUserId).maybeSingle();
+      applyMood(myMoodRow ? myMoodRow.mood : 'happy', { silent: true, deterministic: true, fromRemote: true });
+
+      await refreshPartnerSection();
+      await loadGallery();
+    });
   })();
 </script>
 
