@@ -1,7 +1,7 @@
 -- ============================================================
 -- Pairing system: tables, RLS, and rate limiting
--- Run this whole script once in the Supabase SQL Editor for
--- project knxaqkhoyabptcpgaedr.
+-- Run this whole script once in the Supabase SQL Editor, after
+-- 0000_gallery_bucket.sql.
 -- ============================================================
 
 -- 1. Core tables --------------------------------------------------
