@@ -1,40 +1,39 @@
 # zach-to-girlfriend
 
-A small personalized "1 Month Anniversary" website for a couple (Zach & Holly), built as a set of static HTML pages with vanilla JavaScript and a [Supabase](https://supabase.com) backend for shared, real-time-ish state (mood syncing) and photo storage.
+A shared "mood home" for couples, built as a set of static HTML pages with vanilla JavaScript and a [Supabase](https://supabase.com) backend (Auth, Postgres, Storage). Each couple signs up, pairs with their partner via a short invite code, and gets their own private mood-tracking dashboard, an interactive playground, and a shared photo gallery — isolated from every other couple using the site via Row Level Security.
 
 ## Pages
 
-- **`index.html`** — The main landing page.
-  - Plays an intro animation on first visit (two eyes opening, styled as "the page waking up"), then reveals the page content. The intro is skipped on repeat visits via a `localStorage` flag.
-  - Displays a "Zach & Holly" header with the relationship start date.
-  - **Mood picker**: 8 selectable moods (Happy, Tired, Sad, Mad, Hungry, Sleepy, Excited, Naughty). Selecting a mood:
-    - Changes the page's background gradient and accent colors.
-    - Shows a matching message in a speech bubble.
-    - Spawns floating, mood-themed emoji particles that drift up the screen.
-    - Saves the mood to `localStorage` and pushes it to a Supabase table (`mood_state`) so it can be read by the other pages.
-  - **Shared photo gallery**: either partner can upload a photo via a file picker. Photos are uploaded to a public Supabase Storage bucket (`gallery-photos`) and the gallery re-renders the list of uploaded images for both people to see. Includes basic client-side validation (image type, 10MB size limit) and upload status messaging.
-  - Links to `playground.html` ("Visit our Playground") and, more faintly, to `zach.html` ("Zach's secret view").
+- **`login.html`** — Sign up or log in (Supabase Auth, email + password). Signing up without an invite code creates a new pair and hands you a short code to share with your partner; signing up *with* a code joins their pair instead.
 
-- **`playground.html`** — An interactive page featuring a roaming animated face (just eyes and a mouth on a circle — no body) that reacts to touch/click:
+- **`index.html`** — The main dashboard (requires login; redirects to `login.html` if you're not signed in).
+  - Plays an intro animation on first visit (two eyes opening, styled as "the page waking up"), then reveals the page content. Skipped on repeat visits via a `localStorage` flag.
+  - Dynamic header: both partners' real names, a live "days together" counter and month badge computed from the pair's start date.
+  - **Mood picker**: 8 selectable moods (Happy, Tired, Sad, Mad, Hungry, Sleepy, Excited, Naughty). Selecting one changes the page's background gradient/accent colors, shows a matching message, spawns mood-themed floating particles, and saves your mood to your own row in Supabase (visible to your partner, not to anyone else).
+  - **Partner section**: shows your partner's current mood read-only. If they haven't joined your pair yet, shows your invite code instead.
+  - **Shared photo gallery**: either partner can upload a photo via a file picker; photos live in a private, pair-scoped Supabase Storage path and are shown via short-lived signed URLs. Click a photo to view it full-size; each photo has a two-tap delete button.
+  - Links to `playground.html` and a log-out control.
+
+- **`playground.html`** — An interactive page with a roaming animated face (just eyes and a mouth on a circle) that reflects *your partner's* current mood and reacts to touch:
   - Tapping elsewhere on the screen moves the face there.
-  - Poking the face (a plain tap on it) triggers a blink/poke reaction.
-  - Tickling the cheeks triggers a squirming/giggling reaction.
-  - Booping the chin triggers an embarrassed "duck and hide" reaction.
-  - Tapping the eyes makes the face flee to a random screen corner.
-  - Dragging across the face makes it blush.
-  - The face's expression mirrors whatever mood is currently set on the main page, kept in sync via Supabase polling (every 4 seconds) and `localStorage`.
-  - Links back to `index.html`.
-
-- **`zach.html`** — A private, read-only view (linked faintly from the main page as "Zach's secret view") that displays Holly's currently-set mood, polling the same Supabase `mood_state` table every 4 seconds to show a near-real-time mood, a matching face illustration, a suggested response message, and a "time ago" timestamp of the last update.
+  - Tapping the head (outside the zones below) makes her happy.
+  - Tapping a cheek makes her irritated — she shakes and flees to a corner, and stays there (no auto-return).
+  - Holding a cheek pinches it — a red, stretched mark on that side while held.
+  - Booping the chin makes her shy — she ducks and fades briefly.
+  - Dragging/patting across the face makes her blush.
+  - Tapping the eyes or mouth is refused outright — a shake and a "not there!" bubble, no other effect.
+  - Requires login; syncs to your partner's mood via Supabase polling every 4 seconds.
 
 ## Tech stack
 
-- Static HTML, CSS, and vanilla JavaScript — no build step, bundler, or package manager (no `package.json` in this repo).
-- [Google Fonts](https://fonts.google.com/) — `Baloo 2` and `Quicksand`, loaded via `<link>` tags.
-- [Supabase](https://supabase.com) for the backend:
-  - **PostgREST table (`mood_state`)** — stores the single current mood (row `id: 1`) with an `updated_at` timestamp, read/written via the Supabase REST API (`/rest/v1/mood_state`).
-  - **Storage bucket (`gallery-photos`)** — a public bucket used to store and serve uploaded gallery photos via the Supabase Storage REST API (`/storage/v1/object/...`).
-  - Each page embeds a `SUPABASE_URL` and `SUPABASE_ANON_KEY`. These are Supabase's public anon keys, which are designed to be used in client-side code — access control is enforced by Supabase Row Level Security policies on the backend, not by keeping the key secret.
+- Static HTML, CSS, and vanilla JavaScript — no build step, bundler, or package manager.
+- [Google Fonts](https://fonts.google.com/) — `Baloo 2` and `Quicksand`.
+- [Supabase](https://supabase.com) for the backend, accessed via the `@supabase/supabase-js` client (loaded from the `esm.sh` CDN, no install needed):
+  - **Auth** — email/password signup and login.
+  - **Postgres tables**: `pairs` (id, invite code, since-date), `profiles` (links a user to their pair, holds their display name), `mood_state` (one row per user). All protected by Row Level Security — a user can only read/write rows belonging to their own pair, enforced via a `security definer` helper function (`auth_pair_id()`), not by client-side trust.
+  - **Storage bucket (`gallery-photos`)** — private, RLS-scoped by a `{pair_id}/{filename}` path convention; access requires an authenticated session in the right pair.
+  - **Rate limiting** — a DB trigger coalesces mood updates faster than 1/second per user, and another caps gallery uploads at 30/hour per pair.
+  - The exact schema/policies/triggers live in [`supabase/migrations/0001_pairing_and_rls.sql`](supabase/migrations/0001_pairing_and_rls.sql).
 
 ## Installation / running locally
 
@@ -48,17 +47,14 @@ python -m http.server 8000
 npx serve .
 ```
 
-Then open `http://localhost:8000/index.html` in a browser.
+Then open `http://localhost:8000/login.html` in a browser.
 
-You can also open `index.html` directly as a `file://` URL, though some browsers restrict certain features (like `fetch` requests) for local files, so a local server is recommended.
-
-TODO: Document the exact Supabase schema (columns/types for `mood_state`) and Storage bucket policies needed to stand up a fresh Supabase project for this site, since the current setup connects to an already-configured project.
+To stand up your own Supabase project for this site, run the migration in `supabase/migrations/0001_pairing_and_rls.sql` against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`.
 
 ## Usage
 
-1. Open `index.html`.
-2. Watch the intro animation (or skip straight to the page on repeat visits).
-3. Pick a mood from the mood picker — the whole page's theme and message will update, and the mood is shared with the other pages via Supabase.
-4. Visit `playground.html` to interact with the roaming face.
-5. Upload photos to the shared gallery from the main page.
-6. (Optional, Zach-only) Visit `zach.html` to check Holly's currently set mood.
+1. Open `login.html` and sign up (first partner: leave the invite code blank; second partner: enter the code the first partner was given).
+2. Watch the intro animation on `index.html` (or skip straight to the page on repeat visits).
+3. Pick a mood — the page's theme and message update, and your partner can see it.
+4. Visit `playground.html` to interact with a face reflecting your partner's mood.
+5. Upload and view photos in the shared gallery.
