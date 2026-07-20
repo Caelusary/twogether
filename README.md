@@ -1,4 +1,4 @@
-# zach-to-girlfriend
+# Twogether
 
 A shared "mood home" for couples, built as a set of static HTML pages with vanilla JavaScript and a [Supabase](https://supabase.com) backend (Auth, Postgres, Storage). Each couple signs up, pairs with their partner via a short invite code, and gets their own private mood-tracking dashboard, an interactive playground, and a shared photo gallery — isolated from every other couple using the site via Row Level Security.
 
@@ -16,11 +16,11 @@ A shared "mood home" for couples, built as a set of static HTML pages with vanil
 
 - **`playground.html`** — An interactive page with a roaming animated face (just eyes and a mouth on a circle) that reflects *your partner's* current mood and reacts to touch:
   - Tapping elsewhere on the screen moves the face there.
-  - Tapping the head (outside the zones below) makes her happy.
-  - Tapping a cheek makes her irritated — she shakes and flees to a corner, and stays there (no auto-return).
+  - Tapping the head (outside the zones below) makes it happy.
+  - Tapping a cheek makes it irritated — it shakes and flees to a corner, and stays there (no auto-return).
   - Holding a cheek pinches it — a red, stretched mark on that side while held.
-  - Booping the chin makes her shy — she ducks and fades briefly.
-  - Dragging/patting across the face makes her blush.
+  - Booping the chin makes it shy — it ducks and fades briefly.
+  - Dragging/patting across the face makes it blush.
   - Tapping the eyes or mouth is refused outright — a shake and a "not there!" bubble, no other effect.
   - Requires login; syncs to your partner's mood via Supabase polling every 4 seconds.
 
@@ -33,7 +33,8 @@ A shared "mood home" for couples, built as a set of static HTML pages with vanil
   - **Postgres tables**: `pairs` (id, invite code, since-date), `profiles` (links a user to their pair, holds their display name), `mood_state` (one row per user). All protected by Row Level Security — a user can only read/write rows belonging to their own pair, enforced via a `security definer` helper function (`auth_pair_id()`), not by client-side trust.
   - **Storage bucket (`gallery-photos`)** — private, RLS-scoped by a `{pair_id}/{filename}` path convention; access requires an authenticated session in the right pair.
   - **Rate limiting** — a DB trigger coalesces mood updates faster than 1/second per user, and another caps gallery uploads at 30/hour per pair.
-  - The exact schema/policies/triggers live in [`supabase/migrations/0001_pairing_and_rls.sql`](supabase/migrations/0001_pairing_and_rls.sql).
+  - The exact schema/policies/triggers live in [`supabase/migrations/`](supabase/migrations/) — `0001_pairing_and_rls.sql` (core schema, RLS, rate limiting) and `0002_pairs_update_policy.sql` (lets either partner edit their pair's start date).
+- [Sentry](https://sentry.io) for client-side error tracking, loaded via the `browser.sentry-cdn.com` CDN bundle on every page — no build step needed there either.
 
 ## Installation / running locally
 
@@ -49,7 +50,7 @@ npx serve .
 
 Then open `http://localhost:8000/login.html` in a browser.
 
-To stand up your own Supabase project for this site, run the migration in `supabase/migrations/0001_pairing_and_rls.sql` against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`.
+To stand up your own Supabase project for this site, run both files in `supabase/migrations/` (in order) against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`. If you want error tracking too, swap in your own Sentry DSN in the `Sentry.init(...)` call on each page.
 
 ## Usage
 
