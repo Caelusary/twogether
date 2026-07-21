@@ -69,8 +69,12 @@
 
   button[type="submit"]{
     margin-top:6px; padding:12px; border:none; border-radius:999px; cursor:pointer;
-    background:var(--accent); color:#fff; font-family:'Baloo 2',cursive; font-weight:700; font-size:15px;
-    transition: transform .15s ease, opacity .2s ease;
+    background:#E9D7CD; color:#fff; font-family:'Baloo 2',cursive; font-weight:700; font-size:15px;
+    transition: transform .15s ease, opacity .2s ease, background .25s ease, box-shadow .25s ease;
+  }
+  button[type="submit"].ready{
+    background:var(--accent);
+    box-shadow:0 8px 20px rgba(255,143,168,0.5);
   }
   button[type="submit"]:active{ transform:scale(0.97); }
   button[type="submit"]:disabled{ opacity:0.6; cursor:default; }
@@ -143,6 +147,14 @@
     signupForm.classList.toggle('active', !isLogin);
     setMsg('');
   }
+
+  function wireReadyState(form, submitBtn){
+    function update(){ submitBtn.classList.toggle('ready', form.checkValidity()); }
+    form.addEventListener('input', update);
+    update();
+  }
+  wireReadyState(loginForm, document.getElementById('loginSubmit'));
+  wireReadyState(signupForm, document.getElementById('signupSubmit'));
   tabLogin.addEventListener('click', function(){ showTab('login'); });
   tabSignup.addEventListener('click', function(){ showTab('signup'); });
 
