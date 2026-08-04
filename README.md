@@ -1,4 +1,4 @@
-# zach-to-girlfriend
+# Twogether
 
 A shared "mood home" for couples, built as a set of static HTML pages with vanilla JavaScript and a [Supabase](https://supabase.com) backend (Auth, Postgres, Storage). Each couple signs up, pairs with their partner via a short invite code, and gets their own private mood-tracking dashboard, an interactive playground, and a shared photo gallery — isolated from every other couple using the site via Row Level Security.
 
