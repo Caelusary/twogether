@@ -12,8 +12,7 @@ A shared "mood home" for couples, built as a set of static HTML pages with vanil
   - **Mood picker**: 8 selectable moods (Happy, Tired, Sad, Mad, Hungry, Sleepy, Excited, Naughty). Selecting one changes the page's background gradient/accent colors, shows a matching message, spawns mood-themed floating particles, and saves your mood to your own row in Supabase (visible to your partner, not to anyone else).
   - **Partner section**: shows your partner's current mood read-only. If they haven't joined your pair yet, shows your invite code instead.
   - **Shared photo gallery**: either partner can upload a photo via a file picker; photos live in a private, pair-scoped Supabase Storage path and are shown via short-lived signed URLs. Click a photo to view it full-size; each photo has a two-tap delete button.
-  - **Account settings** (collapsed at the bottom): remove your partner (they're moved to their own new pair, you keep the date and gallery, and your invite code changes) or delete your account (typed confirmation; if you're unpaired, your gallery is cleared too). Backed by the `remove_partner` and `delete_my_account` RPCs.
-  - Links to `playground.html` and a log-out control.
+  - Nav links to `playground.html` and `profile.html`.
 
 - **`playground.html`** — An interactive page with a roaming animated face (just eyes and a mouth on a circle) that reflects *your partner's* current mood and reacts to touch:
   - Tapping elsewhere on the screen moves the face there.
@@ -24,6 +23,12 @@ A shared "mood home" for couples, built as a set of static HTML pages with vanil
   - Dragging/patting across the face makes her blush.
   - Tapping the eyes or mouth is refused outright — a shake and a "not there!" bubble, no other effect.
   - Requires login; syncs to your partner's mood via Supabase polling every 4 seconds.
+
+- **`profile.html`** — Your profile (requires login):
+  - Edit your display name; your email is shown read-only.
+  - If unpaired: your invite code (with copy), plus a box to join a partner with *their* code. Joining moves you into their pair (their date and gallery); any photos in your own gallery are deleted after a warning. Backed by the `join_pair` RPC, which is called once as a dry run to validate the code first.
+  - If paired: remove your partner (they're moved to their own new pair, you keep the date and gallery, and your invite code changes). Backed by `remove_partner`.
+  - Log out, or delete your account (typed confirmation; if you're unpaired, your gallery is cleared too). Backed by `delete_my_account`.
 
 ## Tech stack
 
