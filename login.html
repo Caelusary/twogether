@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Twogether — Sign In</title>
+<title>Sign in · Twogether</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,65 +35,86 @@
     box-shadow: inset 0 0 140px rgba(60,40,30,0.12);
   }
 
+  body{ align-items:center; }
   .card{
-    position:relative; z-index:1; width:100%; max-width:380px; margin:8vh 20px;
-    background:var(--white); border-radius:26px; padding:32px 26px;
+    position:relative; z-index:1; width:100%; max-width:380px; margin:32px 16px;
+    background:var(--white); border-radius:24px; padding:30px 24px 24px;
     box-shadow:0 20px 50px rgba(0,0,0,0.12);
   }
-  .home-kicker{
-    font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
-    color:var(--loose-text); opacity:0.75; margin:0 0 4px; text-align:center;
+
+  /* brand mark: the same two eyes that greet you on the home page */
+  .eyes{ display:flex; justify-content:center; gap:12px; margin:0 0 12px; }
+  .eye{
+    width:34px; height:34px; border-radius:50%; background:var(--white); border:3.5px solid var(--ink);
+    position:relative; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1);
   }
-  h1{ font-family:'Baloo 2',cursive; font-size:26px; color:var(--accent); margin:0 0 4px; text-align:center; }
-  .sub{ text-align:center; font-size:13px; color:var(--loose-text); margin:0 0 24px; }
+  .eye::after{ content:""; position:absolute; width:12px; height:12px; border-radius:50%; background:var(--ink); top:50%; left:50%; transform:translate(-50%,-50%); }
+  .eye::before{
+    content:""; position:absolute; inset:-2px; background:var(--ink); z-index:1;
+    transform:scaleY(0); transform-origin:top; animation:blink 4.5s infinite;
+  }
+  @keyframes blink{ 0%,92%,100%{ transform:scaleY(0); } 95%{ transform:scaleY(1); } }
+
+  h1{ font-family:'Baloo 2',cursive; font-size:30px; line-height:1.1; color:var(--accent); margin:0 0 6px; text-align:center; }
+  .sub{ text-align:center; font-size:14px; color:#6E5A50; margin:0 0 24px; text-wrap:balance; }
 
   .tabs{ display:flex; background:#F5EDE6; border-radius:999px; padding:4px; margin-bottom:20px; }
   .tab{
-    flex:1; text-align:center; padding:9px 0; border-radius:999px; cursor:pointer;
+    flex:1; min-height:40px; border:none; background:none; border-radius:999px; cursor:pointer;
     font-family:'Baloo 2',cursive; font-weight:600; font-size:14px; color:var(--loose-text);
     transition: background .2s ease, color .2s ease;
   }
   .tab.active{ background:var(--white); color:var(--accent); box-shadow:0 3px 8px rgba(0,0,0,0.08); }
+  .tab:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
   form{ display:none; flex-direction:column; gap:12px; }
   form.active{ display:flex; }
 
-  label{ font-size:12.5px; font-weight:700; color:var(--loose-text); margin-bottom:-6px; }
+  label{ font-size:13px; font-weight:700; color:var(--brown); margin-bottom:-6px; }
+  .optional{ font-weight:500; color:var(--loose-text); }
   input{
-    width:100%; padding:11px 14px; border-radius:12px; border:2px solid #EFE3DA;
-    font-family:'Quicksand',sans-serif; font-size:14px; color:var(--brown); background:#FBF6F1;
+    width:100%; min-height:46px; padding:0 14px; border-radius:12px; border:2px solid #EFE3DA;
+    font-family:'Quicksand',sans-serif; font-size:15px; font-weight:600; color:var(--ink); background:#FBF6F1;
+    transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
   }
-  input:focus{ outline:none; border-color:var(--accent); }
+  input::placeholder{ color:#8C7A70; font-weight:500; }
+  input:focus{ outline:none; border-color:var(--accent); background:var(--white); box-shadow:0 0 0 4px rgba(255,143,168,0.2); }
+  #signupCode{ text-transform:uppercase; letter-spacing:2px; }
+  #signupCode::placeholder{ text-transform:none; letter-spacing:0; }
 
-  .invite-hint{ font-size:11.5px; color:var(--loose-text); opacity:0.8; margin-top:-6px; }
+  .invite-hint{ font-size:12.5px; line-height:1.45; color:#6E5A50; margin:-4px 0 0; text-wrap:pretty; }
 
   button[type="submit"]{
-    margin-top:6px; padding:12px; border:none; border-radius:999px; cursor:pointer;
-    background:#E9D7CD; color:#fff; font-family:'Baloo 2',cursive; font-weight:700; font-size:15px;
-    transition: transform .15s ease, opacity .2s ease, background .25s ease, box-shadow .25s ease;
+    margin-top:6px; min-height:48px; border:none; border-radius:999px; cursor:pointer;
+    background:#EFE3DA; color:#8C7A70; font-family:'Baloo 2',cursive; font-weight:700; font-size:16px;
+    transition: transform .15s ease, opacity .2s ease, background .25s ease, color .25s ease, box-shadow .25s ease;
   }
   button[type="submit"].ready{
-    background:var(--accent);
+    background:var(--accent); color:var(--white);
     box-shadow:0 8px 20px rgba(255,143,168,0.5);
   }
   button[type="submit"]:active{ transform:scale(0.97); }
+  button[type="submit"]:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
   button[type="submit"]:disabled{ opacity:0.6; cursor:default; }
 
-  .msg{ min-height:16px; font-size:12.5px; text-align:center; margin-top:10px; color:var(--loose-text); }
-  .msg.error{ color:#E8483D; font-weight:700; }
-  .msg.success{ color:#3AA76D; font-weight:700; }
+  .msg{ font-size:13px; line-height:1.4; text-align:center; margin:14px 0 0; color:var(--loose-text); }
+  .msg:empty{ display:none; }
+  .msg.error{ color:#C2362C; font-weight:700; }
+  .msg.success{ color:#2E8A59; font-weight:700; }
+
+  @media (prefers-reduced-motion: reduce){ .eye::before{ animation:none; } }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <p class="home-kicker">💞 twogether</p>
+  <div class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></div>
   <h1>Twogether</h1>
   <p class="sub">a shared little world for you and your person</p>
 
-  <div class="tabs">
-    <div class="tab active" id="tabLogin">Log In</div>
-    <div class="tab" id="tabSignup">Sign Up</div>
+  <div class="tabs" role="tablist" aria-label="Log in or sign up">
+    <button type="button" class="tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">Log In</button>
+    <button type="button" class="tab" id="tabSignup" role="tab" aria-selected="false" aria-controls="signupForm">Sign Up</button>
   </div>
 
   <form id="loginForm" class="active">
@@ -111,13 +132,13 @@
     <input type="email" id="signupEmail" autocomplete="email" required>
     <label for="signupPassword">Password</label>
     <input type="password" id="signupPassword" autocomplete="new-password" minlength="6" required>
-    <label for="signupCode">Invite code <span style="font-weight:500;">(optional)</span></label>
-    <input type="text" id="signupCode" placeholder="from your partner, if you have one" maxlength="6" style="text-transform:uppercase;">
-    <p class="invite-hint">Leave this blank to start a new pair — you'll get a code to share with your partner after signing up.</p>
+    <label for="signupCode">Invite code <span class="optional">(optional)</span></label>
+    <input type="text" id="signupCode" placeholder="from your partner, if you have one" maxlength="6" autocomplete="off" aria-describedby="inviteHint">
+    <p class="invite-hint" id="inviteHint">No code? Leave it blank and you'll get one to share with your partner.</p>
     <button type="submit" id="signupSubmit">Sign Up</button>
   </form>
 
-  <p class="msg" id="msg"></p>
+  <p class="msg" id="msg" role="status"></p>
 </div>
 
 <script type="module">
@@ -143,6 +164,8 @@
     var isLogin = which === 'login';
     tabLogin.classList.toggle('active', isLogin);
     tabSignup.classList.toggle('active', !isLogin);
+    tabLogin.setAttribute('aria-selected', String(isLogin));
+    tabSignup.setAttribute('aria-selected', String(!isLogin));
     loginForm.classList.toggle('active', isLogin);
     signupForm.classList.toggle('active', !isLogin);
     setMsg('');
