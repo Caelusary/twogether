@@ -244,6 +244,81 @@
     display:flex; align-items:center; justify-content:center;
   }
 
+  /* ---------------- account settings (collapsed by default) ---------------- */
+  .account-card{
+    margin-top:32px; width:100%; background:color-mix(in srgb, var(--white) 72%, transparent);
+    border-radius:16px; box-shadow:0 4px 14px rgba(0,0,0,0.06); text-align:left; overflow:hidden;
+  }
+  .account-card summary{
+    list-style:none; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    min-height:48px; padding:12px 18px; cursor:pointer; user-select:none;
+    font-family:'Baloo 2',cursive; font-weight:600; font-size:15px; color:var(--loose-text); transition:color 0.6s ease;
+  }
+  .account-card summary::-webkit-details-marker{ display:none; }
+  .account-card summary:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; border-radius:16px; }
+  .account-chev{ font-size:18px; line-height:1; transition:transform 0.25s cubic-bezier(0.23,1,0.32,1); }
+  .account-card[open] .account-chev{ transform:rotate(90deg); }
+  .account-list{ padding:0 18px 6px; }
+  .account-row{ display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid rgba(74,59,51,0.1); }
+  .account-row[hidden]{ display:none; }
+  .account-icon{
+    flex:none; width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:18px; background:#FBF1EE;
+  }
+  .account-text{ flex:1; min-width:0; }
+  .account-title{ margin:0; font-weight:700; font-size:14px; color:var(--ink); }
+  .account-desc{ margin:2px 0 0; font-size:12.5px; line-height:1.4; color:#6E5A50; text-wrap:pretty; }
+  .account-btn{
+    flex:none; min-height:36px; padding:0 14px; border-radius:999px; cursor:pointer;
+    font-family:'Quicksand',sans-serif; font-weight:700; font-size:13px;
+    border:1.5px solid rgba(74,59,51,0.18); background:var(--white); color:var(--brown);
+    transition:background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+  .account-btn.danger{ color:#C2362C; border-color:rgba(194,54,44,0.35); }
+  @media (hover:hover){
+    .account-btn:hover{ border-color:rgba(74,59,51,0.4); }
+    .account-btn.danger:hover{ background:#FDEDEB; border-color:#C2362C; }
+  }
+  .account-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .account-btn:active{ transform:scale(0.97); }
+
+  /* ---------------- confirm sheet (native <dialog>) ---------------- */
+  .confirm-sheet{
+    width:min(360px, calc(100% - 32px)); border:none; border-radius:20px; padding:26px 22px 20px;
+    background:var(--white); color:var(--brown); text-align:center; box-shadow:0 24px 60px rgba(30,20,18,0.3);
+  }
+  .confirm-sheet::backdrop{ background:rgba(30,20,18,0.5); }
+  .confirm-sheet[open]{ animation:sheet-in 0.22s cubic-bezier(0.23,1,0.32,1); }
+  .confirm-sheet[open]::backdrop{ animation:fade-in 0.22s ease-out; }
+  @keyframes sheet-in{ from{ opacity:0; transform:translateY(8px) scale(0.96); } }
+  @keyframes fade-in{ from{ opacity:0; } }
+  .confirm-emoji{ font-size:38px; line-height:1; }
+  .confirm-sheet h3{ margin:10px 0 6px; font-family:'Baloo 2',cursive; font-size:20px; color:var(--ink); text-wrap:balance; }
+  .confirm-body{ margin:0; font-size:13.5px; line-height:1.5; color:#6E5A50; text-wrap:pretty; }
+  .confirm-field{ margin-top:16px; text-align:left; }
+  .confirm-field[hidden]{ display:none; }
+  .confirm-field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:6px; }
+  .confirm-field input{
+    width:100%; min-height:44px; padding:0 14px; border-radius:12px;
+    border:1.5px solid rgba(74,59,51,0.2); font:600 15px 'Quicksand',sans-serif; color:var(--ink); background:#FFFBF8;
+  }
+  .confirm-field input:focus-visible{ outline:none; border-color:#C2362C; box-shadow:0 0 0 3px rgba(194,54,44,0.15); }
+  .confirm-actions{ display:flex; gap:10px; margin-top:20px; }
+  .confirm-actions button{
+    flex:1; min-height:46px; border-radius:999px; cursor:pointer; font:700 14px 'Quicksand',sans-serif;
+    transition:transform 0.15s ease, opacity 0.2s ease;
+  }
+  .confirm-actions button:active{ transform:scale(0.97); }
+  .confirm-actions button:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .confirm-cancel{ border:1.5px solid rgba(74,59,51,0.18); background:var(--white); color:var(--brown); }
+  .confirm-go{ border:none; background:#C2362C; color:#FFF8F6; }
+  .confirm-go:disabled{ opacity:0.45; cursor:not-allowed; transform:none; }
+  .confirm-error{ margin:12px 0 0; min-height:16px; font-size:12.5px; color:#C2362C; }
+  @media (prefers-reduced-motion: reduce){
+    .confirm-sheet[open], .confirm-sheet[open]::backdrop{ animation:none; }
+    .account-chev{ transition:none; }
+  }
+
   footer{ margin-top:30px; font-size:13px; color:var(--loose-text); opacity:0.9; transition:color 0.6s ease; }
   footer .signature{ font-family:'Baloo 2',cursive; font-size:16px; color:var(--accent); margin-top:4px; transition:color 0.6s ease; }
 </style>
@@ -338,6 +413,45 @@
     <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
     <img id="lightboxImg" src="" alt="A memory, enlarged">
   </div>
+
+  <details class="account-card" id="accountCard">
+    <summary>⚙️ Account settings <span class="account-chev" aria-hidden="true">›</span></summary>
+    <div class="account-list">
+      <div class="account-row" id="removePartnerRow" hidden>
+        <span class="account-icon" aria-hidden="true">💔</span>
+        <div class="account-text">
+          <p class="account-title">Remove partner</p>
+          <p class="account-desc" id="removePartnerDesc">Unpair from your partner. You keep your date and photos.</p>
+        </div>
+        <button type="button" class="account-btn" id="removePartnerBtn">Remove</button>
+      </div>
+      <div class="account-row">
+        <span class="account-icon" aria-hidden="true">🗑️</span>
+        <div class="account-text">
+          <p class="account-title">Delete account</p>
+          <p class="account-desc">Erase your login and moods for good.</p>
+        </div>
+        <button type="button" class="account-btn danger" id="deleteAccountBtn">Delete</button>
+      </div>
+    </div>
+  </details>
+
+  <dialog class="confirm-sheet" id="confirmSheet" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
+    <form id="confirmForm">
+      <div class="confirm-emoji" id="confirmEmoji" aria-hidden="true"></div>
+      <h3 id="confirmTitle"></h3>
+      <p class="confirm-body" id="confirmBody"></p>
+      <div class="confirm-field" id="confirmField" hidden>
+        <label for="confirmInput" id="confirmInputLabel"></label>
+        <input id="confirmInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-cancel" id="confirmCancel">Never mind</button>
+        <button type="submit" class="confirm-go" id="confirmGo"></button>
+      </div>
+      <p class="confirm-error" id="confirmError" role="alert"></p>
+    </form>
+  </dialog>
 
   <footer>
     <p>every mood, every month — it's you I choose</p>
@@ -722,6 +836,113 @@
     window.location.href = 'login.html';
   });
 
+  // ---------------- account settings ----------------
+  var removePartnerRow = document.getElementById('removePartnerRow');
+  var removePartnerDesc = document.getElementById('removePartnerDesc');
+  var removePartnerBtn = document.getElementById('removePartnerBtn');
+  var deleteAccountBtn = document.getElementById('deleteAccountBtn');
+
+  // Confirm sheet: one native <dialog> shared by both actions. opts.run
+  // returns an error message to show, or nothing on success.
+  var confirmSheet = document.getElementById('confirmSheet');
+  var confirmForm = document.getElementById('confirmForm');
+  var confirmField = document.getElementById('confirmField');
+  var confirmInput = document.getElementById('confirmInput');
+  var confirmGo = document.getElementById('confirmGo');
+  var confirmCancel = document.getElementById('confirmCancel');
+  var confirmError = document.getElementById('confirmError');
+  var confirmOpts = null;
+  var confirmBusy = false;
+
+  function updateConfirmGo(){
+    var typed = !confirmOpts.requireText || confirmInput.value.trim().toLowerCase() === confirmOpts.requireText;
+    confirmGo.disabled = confirmBusy || !typed;
+  }
+
+  function openConfirm(opts){
+    confirmOpts = opts;
+    confirmBusy = false;
+    document.getElementById('confirmEmoji').textContent = opts.emoji;
+    document.getElementById('confirmTitle').textContent = opts.title;
+    document.getElementById('confirmBody').textContent = opts.body;
+    confirmField.hidden = !opts.requireText;
+    document.getElementById('confirmInputLabel').textContent = opts.requireText ? 'Type "' + opts.requireText + '" to confirm' : '';
+    confirmInput.value = '';
+    confirmError.textContent = '';
+    confirmGo.textContent = opts.goLabel;
+    updateConfirmGo();
+    confirmSheet.showModal();
+    (opts.requireText ? confirmInput : confirmCancel).focus();
+  }
+
+  confirmInput.addEventListener('input', updateConfirmGo);
+  confirmCancel.addEventListener('click', function(){ if (!confirmBusy) confirmSheet.close(); });
+  confirmSheet.addEventListener('cancel', function(e){ if (confirmBusy) e.preventDefault(); });
+  confirmSheet.addEventListener('click', function(e){ if (e.target === confirmSheet && !confirmBusy) confirmSheet.close(); });
+
+  confirmForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (confirmGo.disabled) return;
+    confirmBusy = true;
+    confirmError.textContent = '';
+    confirmGo.textContent = confirmOpts.busyLabel;
+    updateConfirmGo();
+    var err = await confirmOpts.run();
+    if (err){
+      confirmBusy = false;
+      confirmError.textContent = err;
+      confirmGo.textContent = confirmOpts.goLabel;
+      updateConfirmGo();
+    }
+  });
+
+  removePartnerBtn.addEventListener('click', function(){
+    var name = partnerProfile ? partnerProfile.display_name : 'your partner';
+    openConfirm({
+      emoji: '💔',
+      title: 'Remove ' + name + '?',
+      body: "You'll keep your date and your gallery. " + name + " gets unpaired, and your invite code changes so you can pair with someone new.",
+      goLabel: 'Remove',
+      busyLabel: 'Removing...',
+      run: async function(){
+        var { error } = await supabase.rpc('remove_partner');
+        if (error) return "Couldn't remove your partner. Try again?";
+        window.location.reload();
+      }
+    });
+  });
+
+  deleteAccountBtn.addEventListener('click', function(){
+    openConfirm({
+      emoji: '🥺',
+      title: 'Delete your account?',
+      body: partnerProfile
+        ? 'Your login and moods are erased for good. ' + partnerProfile.display_name + ' keeps your shared date and photos.'
+        : "Your login, moods, and every photo in your gallery are erased for good. This can't be undone.",
+      requireText: 'delete',
+      goLabel: 'Delete forever',
+      busyLabel: 'Deleting...',
+      run: async function(){
+        // Solo pair: nobody keeps the gallery, so clear the files first (SQL
+        // can't delete storage objects). With a partner, the photos stay theirs.
+        if (!partnerProfile){
+          while (true){
+            var { data: files, error: listErr } = await supabase.storage.from(GALLERY_BUCKET).list(myProfile.pair_id, { limit: 100 });
+            if (listErr) return "Couldn't clear your gallery. Try again?";
+            var paths = (files || []).filter(function(f){ return f.id; }).map(function(f){ return myProfile.pair_id + '/' + f.name; });
+            if (!paths.length) break;
+            var { error: rmErr } = await supabase.storage.from(GALLERY_BUCKET).remove(paths);
+            if (rmErr) return "Couldn't clear your gallery. Try again?";
+          }
+        }
+        var { error } = await supabase.rpc('delete_my_account');
+        if (error) return "Couldn't delete your account. Try again?";
+        await supabase.auth.signOut();
+        window.location.href = 'login.html';
+      }
+    });
+  });
+
   // ---------------- intro sequence: the page wakes up ----------------
   var html = document.documentElement;
   var page = document.getElementById('page');
@@ -779,6 +1000,8 @@
 
     var { data: partnerRow } = await supabase.from('profiles').select('*').eq('pair_id', myProfile.pair_id).neq('user_id', myUserId).maybeSingle();
     partnerProfile = partnerRow;
+    removePartnerRow.hidden = !partnerProfile;
+    if (partnerProfile) removePartnerDesc.textContent = 'Unpair from ' + partnerProfile.display_name + '. You keep your date and photos.';
 
     document.getElementById('namesHeading').innerHTML =
       (myProfile.display_name || 'You') + '<span class="amp">&amp;</span>' + (partnerProfile ? partnerProfile.display_name : '...');
