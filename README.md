@@ -12,6 +12,7 @@ A shared "mood home" for couples, built as a set of static HTML pages with vanil
   - **Mood picker**: 8 selectable moods (Happy, Tired, Sad, Mad, Hungry, Sleepy, Excited, Naughty). Selecting one changes the page's background gradient/accent colors, shows a matching message, spawns mood-themed floating particles, and saves your mood to your own row in Supabase (visible to your partner, not to anyone else).
   - **Partner section**: shows your partner's current mood read-only. If they haven't joined your pair yet, shows your invite code instead.
   - **Shared photo gallery**: either partner can upload a photo via a file picker; photos live in a private, pair-scoped Supabase Storage path and are shown via short-lived signed URLs. Click a photo to view it full-size; each photo has a two-tap delete button.
+  - **Account settings** (collapsed at the bottom): remove your partner (they're moved to their own new pair, you keep the date and gallery, and your invite code changes) or delete your account (typed confirmation; if you're unpaired, your gallery is cleared too). Backed by the `remove_partner` and `delete_my_account` RPCs.
   - Links to `playground.html` and a log-out control.
 
 - **`playground.html`** — An interactive page with a roaming animated face (just eyes and a mouth on a circle) that reflects *your partner's* current mood and reacts to touch:
@@ -49,7 +50,7 @@ npx serve .
 
 Then open `http://localhost:8000/login.html` in a browser.
 
-To stand up your own Supabase project for this site, run the migration in `supabase/migrations/0001_pairing_and_rls.sql` against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`.
+To stand up your own Supabase project for this site, run every file in `supabase/migrations/` in numeric order against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`.
 
 ## Usage
 
