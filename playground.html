@@ -140,7 +140,7 @@
   <nav class="site-nav" aria-label="Main">
     <a href="index.html">🏡 Home</a>
     <a href="playground.html" class="current" aria-current="page">🎈 Playground</a>
-    <button type="button" id="logoutLink">🚪 Log out</button>
+    <a href="profile.html">👤 Profile</a>
   </nav>
   <h1 class="names">Our Playground 🎈</h1>
   <p class="hint" id="hint">Tap, tickle, boop or pat. Eyes and mouth are off limits 👀🚫</p>
@@ -281,10 +281,6 @@
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsa2RnY2pveHZ2ZWJibW51eGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTkwODIsImV4cCI6MjEwMDEzNTA4Mn0.dM-b1C9VQjkXOse-r1cHj89T0GxRIGygiIsKx8y50wI";
   var supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  document.getElementById('logoutLink').addEventListener('click', async function(){
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
-  });
 
   (async function(){
     var moods = {
