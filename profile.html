@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Profile · Twogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script
+  src="https://browser.sentry-cdn.com/10.67.0/bundle.min.js"
+  integrity="sha384-XcUJj5iqu49IW8uRaR1JR5XT+Hri4IQkCDLt1Ek9li1Qby2ef+35Ur6/7QXwh1VF"
+  crossorigin="anonymous"
+></script>
+<script>
+  Sentry.init({ dsn: "https://d22229fe31d1c4d9683482cb0cb69231@o4511733518172160.ingest.us.sentry.io/4511768120000512" });
+</script>
+<style>
+  :root{ --white:#FFFFFF; --brown:#4A3B33; --ink:#2B2320; --muted:#6E5A50; --danger:#C2362C; }
+
+  body.mood-happy{ --bg-top:#FDF1E6; --bg-bottom:#FBE4D0; --loose-text:#7A6459; --accent:#FF8FA8; }
+  body.mood-tired{ --bg-top:#EDE7F6; --bg-bottom:#D9CFEA; --loose-text:#6B6079; --accent:#9C8FC2; }
+  body.mood-sad{ --bg-top:#E3EEF9; --bg-bottom:#C9DFF0; --loose-text:#5C7288; --accent:#6FA3D1; }
+  body.mood-mad{ --bg-top:#FFE0D2; --bg-bottom:#FFB99F; --loose-text:#8A4A36; --accent:#FF6B4A; }
+  body.mood-hungry{ --bg-top:#FFF3D6; --bg-bottom:#FFDFA0; --loose-text:#8A6A2C; --accent:#FFA83D; }
+  body.mood-sleepy{ --bg-top:#3A3560; --bg-bottom:#22203E; --loose-text:#CFC9EA; --accent:#9E90D8; }
+  body.mood-excited{ --bg-top:#FFEE9E; --bg-bottom:#FFB3DE; --loose-text:#8A5A72; --accent:#FF5FA8; }
+  body.mood-naughty{ --bg-top:#F1DFFF; --bg-bottom:#FFCCEB; --loose-text:#7A4F8A; --accent:#C463D9; }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body{ margin:0; padding:0; min-height:100%; }
+  body{
+    background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    font-family:'Quicksand', sans-serif; color:var(--brown);
+    display:flex; justify-content:center; min-height:100vh; position:relative; overflow-x:hidden;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    box-shadow:inset 0 0 140px rgba(60,40,30,0.12);
+  }
+
+  .page{
+    position:relative; z-index:1; width:100%; max-width:480px;
+    padding:32px 16px 48px; display:flex; flex-direction:column; align-items:center;
+    opacity:0; transition:opacity 0.3s ease;
+  }
+  .page.ready{ opacity:1; }
+
+  .site-nav{
+    display:inline-flex; gap:2px; margin:0 0 26px;
+    background:rgba(255,255,255,0.55); padding:4px; border-radius:999px; backdrop-filter:blur(6px);
+  }
+  .site-nav a{
+    min-height:36px; display:inline-flex; align-items:center; padding:0 14px; border-radius:999px;
+    font-family:'Baloo 2',cursive; font-weight:600; font-size:13px; color:var(--loose-text); text-decoration:none;
+    transition:background .25s ease, color .25s ease;
+  }
+  @media (hover:hover){ .site-nav a:not(.current):hover{ background:rgba(255,255,255,0.6); } }
+  .site-nav a.current{ background:var(--white); color:var(--accent); box-shadow:0 3px 8px rgba(0,0,0,0.1); }
+  .site-nav a:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  body.mood-sleepy .site-nav{ background:rgba(255,255,255,0.1); }
+
+  .hello{ text-align:center; margin-bottom:22px; }
+  .hello-emoji{
+    width:72px; height:72px; margin:0 auto 10px; border-radius:22px; background:var(--white);
+    display:flex; align-items:center; justify-content:center; font-size:40px; box-shadow:0 6px 18px rgba(0,0,0,0.1);
+  }
+  h1{ font-family:'Baloo 2',cursive; font-size:clamp(26px,7vw,32px); line-height:1.1; color:var(--accent); margin:0; text-wrap:balance; }
+  .hello-sub{ margin:4px 0 0; font-size:14px; font-weight:600; color:var(--loose-text); }
+
+  .card{
+    width:100%; background:var(--white); border-radius:20px; padding:18px 20px; margin-top:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08); scroll-margin-top:24px;
+  }
+  .card h2{ font-family:'Baloo 2',cursive; font-size:17px; color:var(--accent); margin:0 0 12px; }
+
+  .field label{ display:block; font-size:13px; font-weight:700; color:var(--brown); margin-bottom:6px; }
+  .field + .field{ margin-top:14px; }
+  .inline-form{ display:flex; gap:8px; }
+  input[type="text"]{
+    flex:1; min-width:0; min-height:44px; padding:0 14px; border-radius:12px; border:2px solid #EFE3DA;
+    font-family:'Quicksand',sans-serif; font-size:15px; font-weight:600; color:var(--ink); background:#FBF6F1;
+    transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  input[type="text"]::placeholder{ color:#8C7A70; font-weight:500; }
+  input[type="text"]:focus{ outline:none; border-color:var(--accent); background:var(--white); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+  #joinCode{ text-transform:uppercase; letter-spacing:2px; }
+  #joinCode::placeholder{ text-transform:none; letter-spacing:0; }
+  .readonly{ margin:0; font-size:15px; font-weight:600; color:var(--ink); overflow-wrap:anywhere; }
+  .field-msg{ margin:6px 0 0; font-size:12.5px; font-weight:600; color:var(--muted); }
+  .field-msg.error{ color:var(--danger); }
+  .field-msg:empty{ display:none; }
+
+  .btn{
+    flex:none; min-height:44px; padding:0 18px; border-radius:999px; cursor:pointer;
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:14.5px;
+    border:1.5px solid rgba(74,59,51,0.18); background:var(--white); color:var(--brown);
+    transition:background .2s ease, border-color .2s ease, transform .15s ease, opacity .2s ease;
+  }
+  .btn.primary{ border:none; background:var(--accent); color:var(--white); }
+  .btn.danger{ color:var(--danger); border-color:rgba(194,54,44,0.35); }
+  @media (hover:hover){
+    .btn:not(.primary):hover{ border-color:rgba(74,59,51,0.4); }
+    .btn.danger:hover{ background:#FDEDEB; border-color:var(--danger); }
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .btn:disabled{ opacity:0.5; cursor:default; transform:none; }
+
+  .partner-row{ display:flex; align-items:center; gap:14px; }
+  .partner-text{ flex:1; min-width:0; }
+  .partner-text p{ margin:0; }
+  .partner-name{ font-weight:700; font-size:15px; color:var(--ink); }
+  .partner-since{ font-size:13px; color:var(--muted); margin-top:2px !important; }
+
+  .code-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .invite-code{
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:24px; letter-spacing:4px; color:var(--accent);
+    background:#FBF6F1; border:2px dashed var(--accent); border-radius:14px; padding:4px 16px; user-select:all;
+  }
+  .help{ margin:6px 0 0; font-size:12.5px; line-height:1.45; color:var(--muted); text-wrap:pretty; }
+  .divider{ height:1px; background:rgba(74,59,51,0.1); margin:18px 0; border:none; }
+
+  .account-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .account-actions .btn{ flex:1; }
+
+  [hidden]{ display:none !important; }
+
+  /* ---------------- confirm sheet (native <dialog>) ---------------- */
+  .confirm-sheet{
+    width:min(360px, calc(100% - 32px)); border:none; border-radius:20px; padding:26px 22px 20px;
+    background:var(--white); color:var(--brown); text-align:center; box-shadow:0 24px 60px rgba(30,20,18,0.3);
+  }
+  .confirm-sheet::backdrop{ background:rgba(30,20,18,0.5); }
+  .confirm-sheet[open]{ animation:sheet-in 0.22s cubic-bezier(0.23,1,0.32,1); }
+  .confirm-sheet[open]::backdrop{ animation:fade-in 0.22s ease-out; }
+  @keyframes sheet-in{ from{ opacity:0; transform:translateY(8px) scale(0.96); } }
+  @keyframes fade-in{ from{ opacity:0; } }
+  .confirm-emoji{ font-size:38px; line-height:1; }
+  .confirm-sheet h3{ margin:10px 0 6px; font-family:'Baloo 2',cursive; font-size:20px; color:var(--ink); text-wrap:balance; }
+  .confirm-body{ margin:0; font-size:13.5px; line-height:1.5; color:var(--muted); text-wrap:pretty; }
+  .confirm-field{ margin-top:16px; text-align:left; }
+  .confirm-field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:6px; }
+  .confirm-field input{ width:100%; }
+  .confirm-actions{ display:flex; gap:10px; margin-top:20px; }
+  .confirm-actions button{
+    flex:1; min-height:46px; border-radius:999px; cursor:pointer; font:700 14px 'Quicksand',sans-serif;
+    transition:transform 0.15s ease, opacity 0.2s ease;
+  }
+  .confirm-actions button:active{ transform:scale(0.97); }
+  .confirm-actions button:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .confirm-cancel{ border:1.5px solid rgba(74,59,51,0.18); background:var(--white); color:var(--brown); }
+  .confirm-go{ border:none; background:var(--danger); color:#FFF8F6; }
+  .confirm-go.friendly{ background:var(--accent); color:var(--white); }
+  .confirm-go:disabled{ opacity:0.45; cursor:not-allowed; transform:none; }
+  .confirm-error{ margin:12px 0 0; min-height:16px; font-size:12.5px; color:var(--danger); }
+
+  @media (prefers-reduced-motion: reduce){
+    .confirm-sheet[open], .confirm-sheet[open]::backdrop{ animation:none; }
+    .page{ transition:none; }
+  }
+</style>
+</head>
+<body class="mood-happy">
+
+<div class="page" id="page">
+  <nav class="site-nav" aria-label="Main">
+    <a href="index.html">🏡 Home</a>
+    <a href="playground.html">🎈 Playground</a>
+    <a href="profile.html" class="current" aria-current="page">👤 Profile</a>
+  </nav>
+
+  <header class="hello">
+    <div class="hello-emoji" id="moodEmoji" aria-hidden="true">😊</div>
+    <h1 id="helloName">Your profile</h1>
+    <p class="hello-sub" id="helloSub"></p>
+  </header>
+
+  <section class="card" aria-labelledby="youHeading">
+    <h2 id="youHeading">You</h2>
+    <form class="field" id="nameForm">
+      <label for="nameInput">Display name</label>
+      <div class="inline-form">
+        <input type="text" id="nameInput" maxlength="40" autocomplete="nickname" required aria-describedby="nameMsg">
+        <button type="submit" class="btn primary" id="nameSave" disabled>Save</button>
+      </div>
+      <p class="field-msg" id="nameMsg" role="status"></p>
+    </form>
+    <div class="field">
+      <label>Email</label>
+      <p class="readonly" id="emailText">…</p>
+    </div>
+  </section>
+
+  <section class="card" id="partner" aria-labelledby="partnerHeading">
+    <h2 id="partnerHeading">Your partner</h2>
+
+    <div id="pairedView" hidden>
+      <div class="partner-row">
+        <div class="partner-text">
+          <p class="partner-name" id="partnerName"></p>
+          <p class="partner-since" id="partnerSince"></p>
+        </div>
+        <button type="button" class="btn danger" id="removePartnerBtn">Remove</button>
+      </div>
+    </div>
+
+    <div id="soloView" hidden>
+      <div class="field">
+        <label>Your invite code</label>
+        <div class="code-row">
+          <span class="invite-code" id="inviteCode">------</span>
+          <button type="button" class="btn" id="copyCodeBtn">Copy</button>
+        </div>
+        <p class="help">Send this to your partner. They enter it when they sign up, or here on their profile.</p>
+      </div>
+      <hr class="divider">
+      <form class="field" id="joinForm">
+        <label for="joinCode">Have their code instead?</label>
+        <div class="inline-form">
+          <input type="text" id="joinCode" maxlength="6" placeholder="6-character code" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="joinMsg">
+          <button type="submit" class="btn primary" id="joinBtn" disabled>Join</button>
+        </div>
+        <p class="field-msg" id="joinMsg" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="accountHeading">
+    <h2 id="accountHeading">Account</h2>
+    <div class="account-actions">
+      <button type="button" class="btn" id="logoutBtn">🚪 Log out</button>
+      <button type="button" class="btn danger" id="deleteAccountBtn">Delete account</button>
+    </div>
+  </section>
+</div>
+
+<dialog class="confirm-sheet" id="confirmSheet" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
+  <form id="confirmForm">
+    <div class="confirm-emoji" id="confirmEmoji" aria-hidden="true"></div>
+    <h3 id="confirmTitle"></h3>
+    <p class="confirm-body" id="confirmBody"></p>
+    <div class="confirm-field" id="confirmField" hidden>
+      <label for="confirmInput" id="confirmInputLabel"></label>
+      <input id="confirmInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="confirm-cancel" id="confirmCancel">Never mind</button>
+      <button type="submit" class="confirm-go" id="confirmGo"></button>
+    </div>
+    <p class="confirm-error" id="confirmError" role="alert"></p>
+  </form>
+</dialog>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  var SUPABASE_URL = "https://vlkdgcjoxvvebbmnuxht.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsa2RnY2pveHZ2ZWJibW51eGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTkwODIsImV4cCI6MjEwMDEzNTA4Mn0.dM-b1C9VQjkXOse-r1cHj89T0GxRIGygiIsKx8y50wI";
+  var supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var GALLERY_BUCKET = 'gallery-photos';
+  var moodEmoji = { happy:'😊', tired:'🥱', sad:'😢', mad:'😠', hungry:'🍙', sleepy:'😴', excited:'🤩', naughty:'😏' };
+
+  var myUserId = null;
+  var myProfile = null;
+  var partnerProfile = null;
+  var pairInfo = null;
+
+  // ---------------- confirm sheet ----------------
+  // One native <dialog> shared by every destructive action. opts.run
+  // returns an error message to show, or nothing on success.
+  var confirmSheet = document.getElementById('confirmSheet');
+  var confirmField = document.getElementById('confirmField');
+  var confirmInput = document.getElementById('confirmInput');
+  var confirmGo = document.getElementById('confirmGo');
+  var confirmCancel = document.getElementById('confirmCancel');
+  var confirmError = document.getElementById('confirmError');
+  var confirmOpts = null;
+  var confirmBusy = false;
+
+  function updateConfirmGo(){
+    var typed = !confirmOpts.requireText || confirmInput.value.trim().toLowerCase() === confirmOpts.requireText;
+    confirmGo.disabled = confirmBusy || !typed;
+  }
+
+  function openConfirm(opts){
+    confirmOpts = opts;
+    confirmBusy = false;
+    document.getElementById('confirmEmoji').textContent = opts.emoji;
+    document.getElementById('confirmTitle').textContent = opts.title;
+    document.getElementById('confirmBody').textContent = opts.body;
+    confirmField.hidden = !opts.requireText;
+    document.getElementById('confirmInputLabel').textContent = opts.requireText ? 'Type "' + opts.requireText + '" to confirm' : '';
+    confirmInput.value = '';
+    confirmError.textContent = '';
+    confirmGo.textContent = opts.goLabel;
+    confirmGo.classList.toggle('friendly', !!opts.friendly);
+    updateConfirmGo();
+    confirmSheet.showModal();
+    (opts.requireText ? confirmInput : confirmCancel).focus();
+  }
+
+  confirmInput.addEventListener('input', updateConfirmGo);
+  confirmCancel.addEventListener('click', function(){ if (!confirmBusy) confirmSheet.close(); });
+  confirmSheet.addEventListener('cancel', function(e){ if (confirmBusy) e.preventDefault(); });
+  confirmSheet.addEventListener('click', function(e){ if (e.target === confirmSheet && !confirmBusy) confirmSheet.close(); });
+
+  document.getElementById('confirmForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (confirmGo.disabled) return;
+    confirmBusy = true;
+    confirmError.textContent = '';
+    confirmGo.textContent = confirmOpts.busyLabel;
+    updateConfirmGo();
+    var err = await confirmOpts.run();
+    if (err){
+      confirmBusy = false;
+      confirmError.textContent = err;
+      confirmGo.textContent = confirmOpts.goLabel;
+      updateConfirmGo();
+    }
+  });
+
+  // ---------------- gallery helpers ----------------
+  async function listMyGallery(){
+    var { data, error } = await supabase.storage.from(GALLERY_BUCKET).list(myProfile.pair_id, { limit: 100 });
+    if (error) return null;
+    return (data || []).filter(function(f){ return f.id; });
+  }
+
+  // Deletes every file in the caller's pair folder. Returns an error message or nothing.
+  async function clearMyGallery(){
+    while (true){
+      var files = await listMyGallery();
+      if (!files) return "Couldn't clear your gallery. Try again?";
+      if (!files.length) return;
+      var paths = files.map(function(f){ return myProfile.pair_id + '/' + f.name; });
+      var { error } = await supabase.storage.from(GALLERY_BUCKET).remove(paths);
+      if (error) return "Couldn't clear your gallery. Try again?";
+    }
+  }
+
+  // ---------------- display name ----------------
+  var nameForm = document.getElementById('nameForm');
+  var nameInput = document.getElementById('nameInput');
+  var nameSave = document.getElementById('nameSave');
+  var nameMsg = document.getElementById('nameMsg');
+
+  function setMsg(el, text, isError){
+    el.textContent = text || '';
+    el.classList.toggle('error', !!isError);
+  }
+
+  nameInput.addEventListener('input', function(){
+    var v = nameInput.value.trim();
+    nameSave.disabled = !v || v === myProfile.display_name;
+    setMsg(nameMsg, '');
+  });
+
+  nameForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var v = nameInput.value.trim();
+    if (!v || v === myProfile.display_name) return;
+    nameSave.disabled = true;
+    var { error } = await supabase.from('profiles').update({ display_name: v }).eq('user_id', myUserId);
+    if (error){
+      setMsg(nameMsg, "Couldn't save that name. Try again?", true);
+      nameSave.disabled = false;
+      return;
+    }
+    myProfile.display_name = v;
+    nameInput.value = v;
+    document.getElementById('helloName').textContent = v;
+    setMsg(nameMsg, 'Saved 💕');
+  });
+
+  // ---------------- partner: copy code, join, remove ----------------
+  var copyCodeBtn = document.getElementById('copyCodeBtn');
+  copyCodeBtn.addEventListener('click', async function(){
+    try {
+      await navigator.clipboard.writeText(pairInfo.invite_code);
+      copyCodeBtn.textContent = 'Copied!';
+    } catch (e) {
+      copyCodeBtn.textContent = 'Select it ↖';
+    }
+    setTimeout(function(){ copyCodeBtn.textContent = 'Copy'; }, 2000);
+  });
+
+  var joinForm = document.getElementById('joinForm');
+  var joinCode = document.getElementById('joinCode');
+  var joinBtn = document.getElementById('joinBtn');
+  var joinMsg = document.getElementById('joinMsg');
+
+  joinCode.addEventListener('input', function(){
+    joinBtn.disabled = joinCode.value.trim().length !== 6;
+    setMsg(joinMsg, '');
+  });
+
+  joinForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var code = joinCode.value.trim().toUpperCase();
+    if (code.length !== 6) return;
+    joinBtn.disabled = true;
+    setMsg(joinMsg, 'Checking that code...');
+
+    // Dry run: validates the code and tells us whose pair it is.
+    var { data: theirName, error } = await supabase.rpc('join_pair', { p_invite_code: code, p_dry_run: true });
+    joinBtn.disabled = false;
+    if (error){
+      setMsg(joinMsg, error.message, true);
+      return;
+    }
+    setMsg(joinMsg, '');
+
+    var files = await listMyGallery();
+    var photoCount = files ? files.length : 0;
+    openConfirm({
+      emoji: '💞',
+      title: 'Join ' + theirName + '?',
+      body: "You'll share " + theirName + "'s date and gallery from now on." +
+        (photoCount ? ' The ' + photoCount + (photoCount === 1 ? ' photo' : ' photos') + " in your own gallery will be deleted." : ''),
+      friendly: !photoCount,
+      goLabel: 'Join ' + theirName,
+      busyLabel: 'Joining...',
+      run: async function(){
+        if (photoCount){
+          var clearErr = await clearMyGallery();
+          if (clearErr) return clearErr;
+        }
+        var { error: joinErr } = await supabase.rpc('join_pair', { p_invite_code: code });
+        if (joinErr) return joinErr.message;
+        window.location.href = 'index.html';
+      }
+    });
+  });
+
+  document.getElementById('removePartnerBtn').addEventListener('click', function(){
+    var name = partnerProfile.display_name;
+    openConfirm({
+      emoji: '💔',
+      title: 'Remove ' + name + '?',
+      body: "You'll keep your date and your gallery. " + name + " gets unpaired, and your invite code changes so you can pair with someone new.",
+      goLabel: 'Remove',
+      busyLabel: 'Removing...',
+      run: async function(){
+        var { error } = await supabase.rpc('remove_partner');
+        if (error) return "Couldn't remove your partner. Try again?";
+        window.location.reload();
+      }
+    });
+  });
+
+  // ---------------- account ----------------
+  document.getElementById('logoutBtn').addEventListener('click', async function(){
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  document.getElementById('deleteAccountBtn').addEventListener('click', function(){
+    openConfirm({
+      emoji: '🥺',
+      title: 'Delete your account?',
+      body: partnerProfile
+        ? 'Your login and moods are erased for good. ' + partnerProfile.display_name + ' keeps your shared date and photos.'
+        : "Your login, moods, and every photo in your gallery are erased for good. This can't be undone.",
+      requireText: 'delete',
+      goLabel: 'Delete forever',
+      busyLabel: 'Deleting...',
+      run: async function(){
+        // Solo pair: nobody keeps the gallery, so clear the files first (SQL
+        // can't delete storage objects). With a partner, the photos stay theirs.
+        if (!partnerProfile){
+          var clearErr = await clearMyGallery();
+          if (clearErr) return clearErr;
+        }
+        var { error } = await supabase.rpc('delete_my_account');
+        if (error) return "Couldn't delete your account. Try again?";
+        await supabase.auth.signOut();
+        window.location.href = 'login.html';
+      }
+    });
+  });
+
+  // ---------------- boot ----------------
+  (async function boot(){
+    var { data: sessionData } = await supabase.auth.getSession();
+    var session = sessionData && sessionData.session;
+    if (!session){
+      window.location.href = 'login.html';
+      return;
+    }
+    myUserId = session.user.id;
+    document.getElementById('emailText').textContent = session.user.email || '—';
+
+    var { data: profileRow } = await supabase.from('profiles').select('*').eq('user_id', myUserId).maybeSingle();
+    if (!profileRow){
+      // Account never finished setup; home runs the fallback pairing.
+      window.location.href = 'index.html';
+      return;
+    }
+    myProfile = profileRow;
+
+    var [pairRes, partnerRes, moodRes] = await Promise.all([
+      supabase.from('pairs').select('*').eq('id', myProfile.pair_id).maybeSingle(),
+      supabase.from('profiles').select('*').eq('pair_id', myProfile.pair_id).neq('user_id', myUserId).maybeSingle(),
+      supabase.from('mood_state').select('mood').eq('user_id', myUserId).maybeSingle()
+    ]);
+    pairInfo = pairRes.data;
+    partnerProfile = partnerRes.data;
+
+    var mood = moodRes.data && moodEmoji[moodRes.data.mood] ? moodRes.data.mood : 'happy';
+    document.body.className = 'mood-' + mood;
+    document.getElementById('moodEmoji').textContent = moodEmoji[mood];
+
+    document.getElementById('helloName').textContent = myProfile.display_name;
+    nameInput.value = myProfile.display_name;
+
+    if (partnerProfile){
+      document.getElementById('helloSub').textContent = 'paired with ' + partnerProfile.display_name + ' 💕';
+      document.getElementById('partnerName').textContent = partnerProfile.display_name;
+      if (pairInfo){
+        var since = new Date(pairInfo.since_date + 'T00:00:00');
+        document.getElementById('partnerSince').textContent = 'Together since ' + since.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+      }
+      document.getElementById('pairedView').hidden = false;
+    } else {
+      document.getElementById('helloSub').textContent = 'not paired yet';
+      document.getElementById('inviteCode').textContent = pairInfo ? pairInfo.invite_code : '------';
+      document.getElementById('soloView').hidden = false;
+    }
+
+    document.getElementById('page').classList.add('ready');
+    if (location.hash === '#partner' && !partnerProfile) joinCode.focus();
+  })();
+</script>
+
+</body>
+</html>
