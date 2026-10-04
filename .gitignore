@@ -4,3 +4,7 @@
 # OS cruft
 .DS_Store
 Thumbs.db
+
+.vercel
+.env*
+supabase/.temp
