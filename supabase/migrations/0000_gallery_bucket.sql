@@ -7,7 +7,7 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values (
   'gallery-photos',
   'gallery-photos',
-  true,
+  false, -- private: photos are only served through signed URLs
   10485760, -- 10 MB per file
   array['image/jpeg','image/png','image/webp','image/gif','image/heic']
 )
