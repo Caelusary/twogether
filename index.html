@@ -682,15 +682,19 @@
     var { data: files, error } = await supabase.storage.from(GALLERY_BUCKET).list(myProfile.pair_id, {
       limit: 100, sortBy: { column: 'created_at', order: 'desc' }
     });
-    if (error || !files) return;
-    photoRow.querySelectorAll('.photo-slot:not(.add-slot)').forEach(function(el){ el.remove(); });
-    for (var i = 0; i < files.length; i++){
-      var f = files[i];
-      if (!f.id) continue;
-      var path = myProfile.pair_id + '/' + f.name;
-      var { data: signed } = await supabase.storage.from(GALLERY_BUCKET).createSignedUrl(path, 3600);
-      if (signed) renderPhoto(f.name, signed.signedUrl);
+    if (error || !files){
+      galleryHint.textContent = "Couldn't load our memories — try refreshing? 🥺";
+      return;
     }
+    photoRow.querySelectorAll('.photo-slot:not(.add-slot)').forEach(function(el){ el.remove(); });
+    var photos = files.filter(function(f){ return f.id; });
+    if (!photos.length) return;
+    // One batched request instead of one round trip per photo.
+    var paths = photos.map(function(f){ return myProfile.pair_id + '/' + f.name; });
+    var { data: signedList } = await supabase.storage.from(GALLERY_BUCKET).createSignedUrls(paths, 3600);
+    (signedList || []).forEach(function(s, i){
+      if (s && s.signedUrl) renderPhoto(photos[i].name, s.signedUrl);
+    });
   }
 
   addPhotoSlot.addEventListener('click', function(){ photoInput.click(); });
