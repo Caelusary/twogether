@@ -63,6 +63,7 @@
   .site-nav a:focus-visible, .site-nav button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
   #particle-layer{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+  @media (prefers-reduced-motion: reduce){ #particle-layer{ display:none; } }
   .floating-particle{
     position:absolute; bottom:-10%; font-size:20px; opacity:0.85;
     animation-name: float-up; animation-timing-function: ease-in; animation-fill-mode: forwards; user-select:none;
