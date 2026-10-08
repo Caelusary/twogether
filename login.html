@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sign in · Twogether</title>
+<title>twogether · sign in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <script
   src="https://browser.sentry-cdn.com/10.67.0/bundle.min.js"
   integrity="sha384-XcUJj5iqu49IW8uRaR1JR5XT+Hri4IQkCDLt1Ek9li1Qby2ef+35Ur6/7QXwh1VF"
@@ -16,126 +16,150 @@
   Sentry.init({ dsn: "https://d22229fe31d1c4d9683482cb0cb69231@o4511733518172160.ingest.us.sentry.io/4511768120000512" });
 </script>
 <style>
-  :root{ --white:#FFFFFF; --brown:#4A3B33; --ink:#2B2320; --bg-top:#FDF1E6; --bg-bottom:#FBE4D0; --loose-text:#7A6459; --accent:#FF8FA8; }
+  :root{
+    --bg:#1C1A26; --bg-raised:#242130; --bg-sunk:#16141F;
+    --line:#3A3648; --line-strong:#4D4860;
+    --ink:#EFE7DC; --ink-2:#C9C1D6; --ink-3:#9C93AE;
+    --accent:#E8A87C; --accent-ink:#1C1A26; --accent-soft:rgba(232,168,124,.14);
+    --danger:#E5877F;
+    --r-sm:8px; --r-md:14px;
+    --ease-out:cubic-bezier(.23,1,.32,1);
+    --font-display:'Gloock', Georgia, serif;
+    --font-body:'Hanken Grotesk', system-ui, sans-serif;
+    color-scheme:dark;
+  }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body{ margin:0; padding:0; min-height:100%; }
   body{
-    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    font-family:'Quicksand', sans-serif; color:var(--brown);
-    display:flex; justify-content:center; align-items:flex-start;
-    min-height:100vh; position:relative; overflow-x:hidden;
+    background:var(--bg);
+    font-family:var(--font-body); font-size:16px; line-height:1.55; color:var(--ink);
+    display:flex; justify-content:center; align-items:center;
+    min-height:100vh; min-height:100dvh; position:relative; overflow-x:hidden;
   }
   body::before{
     content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
-    opacity:0.05; mix-blend-mode:multiply;
-  }
-  body::after{
-    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    box-shadow: inset 0 0 140px rgba(60,40,30,0.12);
+    background:radial-gradient(60% 45% at 50% 20%, var(--accent-soft), transparent);
   }
 
-  body{ align-items:center; }
   .card{
     position:relative; z-index:1; width:100%; max-width:380px; margin:32px 16px;
-    background:var(--white); border-radius:24px; padding:30px 24px 24px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.12);
+    background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--r-md);
+    padding:32px 24px 24px;
   }
 
-  /* brand mark: the same two eyes that greet you on the home page */
-  .eyes{ display:flex; justify-content:center; gap:12px; margin:0 0 12px; }
-  .eye{
-    width:34px; height:34px; border-radius:50%; background:var(--white); border:3.5px solid var(--ink);
-    position:relative; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  }
-  .eye::after{ content:""; position:absolute; width:12px; height:12px; border-radius:50%; background:var(--ink); top:50%; left:50%; transform:translate(-50%,-50%); }
-  .eye::before{
-    content:""; position:absolute; inset:-2px; background:var(--ink); z-index:1;
-    transform:scaleY(0); transform-origin:top; animation:blink 4.5s infinite;
-  }
-  @keyframes blink{ 0%,92%,100%{ transform:scaleY(0); } 95%{ transform:scaleY(1); } }
+  /* brand mark: the line-art face from the playground, small */
+  .mark{ display:block; width:40px; height:40px; margin:0 auto 12px; }
+  .mark circle.outline{ stroke:var(--accent); stroke-width:1.5; fill:none; }
+  .mark .stroke{ stroke:var(--ink); stroke-width:1.5; fill:none; stroke-linecap:round; }
+  .mark .eyes{ transform-box:fill-box; transform-origin:center; animation:blink 5s infinite; }
+  @keyframes blink{ 0%,94%,100%{ transform:scaleY(1); } 96%{ transform:scaleY(0.1); } }
 
-  h1{ font-family:'Baloo 2',cursive; font-size:30px; line-height:1.1; color:var(--accent); margin:0 0 6px; text-align:center; }
-  .sub{ text-align:center; font-size:14px; color:#6E5A50; margin:0 0 24px; text-wrap:balance; }
+  h1{
+    font-family:var(--font-display); font-weight:400; font-size:clamp(28px,7vw,40px); line-height:1.1;
+    letter-spacing:-0.01em; text-wrap:balance; color:var(--ink); margin:0 0 8px; text-align:center;
+  }
+  .sub{ text-align:center; font-size:15px; color:var(--ink-2); margin:0 0 24px; text-wrap:balance; }
 
-  .tabs{ display:flex; background:#F5EDE6; border-radius:999px; padding:4px; margin-bottom:20px; }
+  .tabs{
+    display:flex; gap:4px; background:var(--bg-sunk); border:1px solid var(--line); border-radius:var(--r-sm);
+    padding:3px; margin-bottom:20px;
+  }
   .tab{
-    flex:1; min-height:40px; border:none; background:none; border-radius:999px; cursor:pointer;
-    font-family:'Baloo 2',cursive; font-weight:600; font-size:14px; color:var(--loose-text);
-    transition: background .2s ease, color .2s ease;
+    flex:1; min-height:44px; border:1px solid transparent; background:none; border-radius:6px; cursor:pointer;
+    font-family:var(--font-body); font-weight:500; font-size:14px; color:var(--ink-3);
+    transition:background-color .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out);
   }
-  .tab.active{ background:var(--white); color:var(--accent); box-shadow:0 3px 8px rgba(0,0,0,0.08); }
+  @media (hover:hover){ .tab:not(.active):hover{ color:var(--ink-2); } }
+  .tab.active{ background:var(--bg-raised); border-color:var(--line-strong); color:var(--ink); }
   .tab:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
-  form{ display:none; flex-direction:column; gap:12px; }
+  form{ display:none; flex-direction:column; gap:16px; }
   form.active{ display:flex; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
 
-  label{ font-size:13px; font-weight:700; color:var(--brown); margin-bottom:-6px; }
-  .optional{ font-weight:500; color:var(--loose-text); }
+  label{ font-size:13px; font-weight:500; color:var(--ink-2); }
+  .optional{ font-weight:400; color:var(--ink-3); }
   input{
-    width:100%; min-height:46px; padding:0 14px; border-radius:12px; border:2px solid #EFE3DA;
-    font-family:'Quicksand',sans-serif; font-size:15px; font-weight:600; color:var(--ink); background:#FBF6F1;
-    transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    width:100%; min-height:44px; padding:0 12px; border-radius:var(--r-sm); border:1px solid var(--line);
+    font-family:var(--font-body); font-size:16px; font-weight:400; color:var(--ink); background:var(--bg-sunk);
+    transition:border-color .15s var(--ease-out), box-shadow .15s var(--ease-out);
   }
-  input::placeholder{ color:#8C7A70; font-weight:500; }
-  input:focus{ outline:none; border-color:var(--accent); background:var(--white); box-shadow:0 0 0 4px rgba(255,143,168,0.2); }
-  #signupCode{ text-transform:uppercase; letter-spacing:2px; }
+  input::placeholder{ color:var(--ink-3); }
+  input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  #signupCode{ text-transform:uppercase; letter-spacing:.12em; }
   #signupCode::placeholder{ text-transform:none; letter-spacing:0; }
 
-  .invite-hint{ font-size:12.5px; line-height:1.45; color:#6E5A50; margin:-4px 0 0; text-wrap:pretty; }
+  .invite-hint{ font-size:13px; line-height:1.5; color:var(--ink-3); margin:0; text-wrap:pretty; }
 
   button[type="submit"]{
-    margin-top:6px; min-height:48px; border:none; border-radius:999px; cursor:pointer;
-    background:#EFE3DA; color:#8C7A70; font-family:'Baloo 2',cursive; font-weight:700; font-size:16px;
-    transition: transform .15s ease, opacity .2s ease, background .25s ease, color .25s ease, box-shadow .25s ease;
+    margin-top:4px; min-height:48px; border:1px solid var(--line-strong); border-radius:var(--r-sm); cursor:pointer;
+    background:transparent; color:var(--ink-2); font-family:var(--font-body); font-weight:500; font-size:16px;
+    transition:transform .15s var(--ease-out), opacity .2s var(--ease-out), background-color .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out);
   }
-  button[type="submit"].ready{
-    background:var(--accent); color:var(--white);
-    box-shadow:0 8px 20px rgba(255,143,168,0.5);
-  }
+  button[type="submit"].ready{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  @media (hover:hover){ button[type="submit"].ready:hover{ background:#EDB48C; } }
   button[type="submit"]:active{ transform:scale(0.97); }
-  button[type="submit"]:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  button[type="submit"]:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   button[type="submit"]:disabled{ opacity:0.6; cursor:default; }
 
-  .msg{ font-size:13px; line-height:1.4; text-align:center; margin:14px 0 0; color:var(--loose-text); }
+  .msg{ font-size:14px; line-height:1.5; text-align:center; margin:16px 0 0; color:var(--ink-2); }
   .msg:empty{ display:none; }
-  .msg.error{ color:#C2362C; font-weight:700; }
-  .msg.success{ color:#2E8A59; font-weight:700; }
+  .msg.error{ color:var(--danger); font-weight:500; }
+  .msg.success{ color:var(--accent); font-weight:500; }
 
-  @media (prefers-reduced-motion: reduce){ .eye::before{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){
+    .mark .eyes{ animation:none; }
+    .tab, input, button[type="submit"]{ transition:none; }
+  }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <div class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></div>
-  <h1>Twogether</h1>
-  <p class="sub">a shared little world for you and your person</p>
+  <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+    <circle class="outline" cx="20" cy="20" r="18"/>
+    <g class="eyes"><path class="stroke" d="M14 17v2.5M26 17v2.5"/></g>
+    <path class="stroke" d="M14.5 25.5 Q20 29.5 25.5 25.5"/>
+  </svg>
+  <h1>twogether</h1>
+  <p class="sub">A quiet place for the two of you.</p>
 
   <div class="tabs" role="tablist" aria-label="Log in or sign up">
-    <button type="button" class="tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">Log In</button>
-    <button type="button" class="tab" id="tabSignup" role="tab" aria-selected="false" aria-controls="signupForm">Sign Up</button>
+    <button type="button" class="tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">Log in</button>
+    <button type="button" class="tab" id="tabSignup" role="tab" aria-selected="false" aria-controls="signupForm">Sign up</button>
   </div>
 
   <form id="loginForm" class="active">
-    <label for="loginEmail">Email</label>
-    <input type="email" id="loginEmail" autocomplete="email" required>
-    <label for="loginPassword">Password</label>
-    <input type="password" id="loginPassword" autocomplete="current-password" required>
-    <button type="submit" id="loginSubmit">Log In</button>
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" required>
+    </div>
+    <button type="submit" id="loginSubmit">Log in</button>
   </form>
 
   <form id="signupForm">
-    <label for="signupName">Your name</label>
-    <input type="text" id="signupName" placeholder="e.g. Alex" autocomplete="given-name" required>
-    <label for="signupEmail">Email</label>
-    <input type="email" id="signupEmail" autocomplete="email" required>
-    <label for="signupPassword">Password</label>
-    <input type="password" id="signupPassword" autocomplete="new-password" minlength="6" required>
-    <label for="signupCode">Invite code <span class="optional">(optional)</span></label>
-    <input type="text" id="signupCode" placeholder="from your partner, if you have one" maxlength="6" autocomplete="off" aria-describedby="inviteHint">
-    <p class="invite-hint" id="inviteHint">No code? Leave it blank and you'll get one to share with your partner.</p>
-    <button type="submit" id="signupSubmit">Sign Up</button>
+    <div class="field">
+      <label for="signupName">Your name</label>
+      <input type="text" id="signupName" placeholder="e.g. Alex" autocomplete="given-name" required>
+    </div>
+    <div class="field">
+      <label for="signupEmail">Email</label>
+      <input type="email" id="signupEmail" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="signupPassword">Password</label>
+      <input type="password" id="signupPassword" autocomplete="new-password" minlength="6" required>
+    </div>
+    <div class="field">
+      <label for="signupCode">Invite code <span class="optional">(optional)</span></label>
+      <input type="text" id="signupCode" placeholder="From your partner, if you have one" maxlength="6" autocomplete="off" aria-describedby="inviteHint">
+      <p class="invite-hint" id="inviteHint">No code? Leave it blank and you'll get one to share with your partner.</p>
+    </div>
+    <button type="submit" id="signupSubmit">Create account</button>
   </form>
 
   <p class="msg" id="msg" role="status"></p>
@@ -200,7 +224,7 @@
       submitBtn.disabled = false;
       return;
     }
-    setMsg('Welcome back 💕', 'success');
+    setMsg('Welcome back.', 'success');
     window.location.href = 'index.html';
   });
 
@@ -237,7 +261,7 @@
       return;
     }
 
-    setMsg('You\'re in 💕 Taking you home...', 'success');
+    setMsg('You\'re in. Taking you home...', 'success');
     window.location.href = 'index.html';
   });
 </script>
