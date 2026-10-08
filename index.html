@@ -246,6 +246,7 @@
     background:rgba(30,20,18,0.55); color:#fff; border:none; display:flex; align-items:center; justify-content:center;
     font-size:12px; line-height:1; cursor:pointer; z-index:2; transition:background 0.2s ease, transform 0.15s ease;
   }
+  .photo-delete::after{ content:''; position:absolute; inset:-11px; } /* invisible 44px tap target */
   .photo-delete:active{ transform:scale(0.9); }
   .photo-delete.confirm{ background:#E8483D; width:auto; padding:0 8px; font-size:10.5px; font-weight:700; }
 
