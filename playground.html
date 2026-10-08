@@ -515,6 +515,7 @@
     document.getElementById('hint').textContent = 'Tap, tickle, boop or pat ' + partnerProfile.display_name + '. Eyes and mouth are off limits 👀🚫';
 
     function fetchPartnerMood(){
+      if (document.hidden) return; // no polling from a background tab
       supabase.from('mood_state').select('mood').eq('user_id', partnerProfile.user_id).maybeSingle()
         .then(function(res){
           if (res.data && res.data.mood){ applyMoodTheme(res.data.mood); }
