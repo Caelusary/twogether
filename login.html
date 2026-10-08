@@ -17,16 +17,15 @@
 </script>
 <style>
   :root{
-    --bg:#1C1A26; --bg-raised:#242130; --bg-sunk:#16141F;
-    --line:#3A3648; --line-strong:#4D4860;
-    --ink:#EFE7DC; --ink-2:#C9C1D6; --ink-3:#9C93AE;
-    --accent:#E8A87C; --accent-ink:#1C1A26; --accent-soft:rgba(232,168,124,.14);
-    --danger:#E5877F;
+    --bg:#F7EFEA; --bg-raised:#FFFAF7; --bg-sunk:#F1E5DF;
+    --line:#E6D5CD; --line-strong:#D4BEB4;
+    --ink:#2B1E24; --ink-2:#5E4A52; --ink-3:#735E68;
+    --accent:#B4445C; --accent-ink:#FFF8F5; --accent-soft:rgba(180,68,92,.10); --accent-hover:#A03C52;
+    --danger:#B5483C;
     --r-sm:8px; --r-md:14px;
     --ease-out:cubic-bezier(.23,1,.32,1);
     --font-display:'Gloock', Georgia, serif;
     --font-body:'Hanken Grotesk', system-ui, sans-serif;
-    color-scheme:dark;
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body{ margin:0; padding:0; min-height:100%; }
@@ -97,7 +96,7 @@
     transition:transform .15s var(--ease-out), opacity .2s var(--ease-out), background-color .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out);
   }
   button[type="submit"].ready{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
-  @media (hover:hover){ button[type="submit"].ready:hover{ background:#EDB48C; } }
+  @media (hover:hover){ button[type="submit"].ready:hover{ background:var(--accent-hover); } }
   button[type="submit"]:active{ transform:scale(0.97); }
   button[type="submit"]:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   button[type="submit"]:disabled{ opacity:0.6; cursor:default; }
@@ -122,7 +121,7 @@
     <path class="stroke" d="M14.5 25.5 Q20 29.5 25.5 25.5"/>
   </svg>
   <h1>twogether</h1>
-  <p class="sub">A quiet place for the two of you.</p>
+  <p class="sub">A little book for the two of you.</p>
 
   <div class="tabs" role="tablist" aria-label="Log in or sign up">
     <button type="button" class="tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">Log in</button>
