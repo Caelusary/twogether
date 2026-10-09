@@ -114,6 +114,11 @@
     transition: left var(--move-dur) cubic-bezier(.3,.9,.4,1.15), top var(--move-dur) cubic-bezier(.3,.9,.4,1.15);
     touch-action:none; cursor:pointer; user-select:none;
   }
+  /* Phones: a bigger face fills the empty lower half instead of floating small. */
+  @media (max-width:600px){
+    .face-wanderer{ width:min(60vw,260px); }
+    body::before{ background:radial-gradient(70% 45% at 50% 58%, rgba(var(--mood-rgb), .12), transparent); }
+  }
   .face-wanderer svg{ width:100%; height:auto; display:block; overflow:visible; }
   .face-wanderer .lf-outline{ fill:var(--bg); }
   .face-wanderer .cheek{ fill:var(--accent); opacity:.22; }
@@ -265,7 +270,7 @@
 </div>
 
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.3?bundle';
 
   var SUPABASE_URL = "https://vlkdgcjoxvvebbmnuxht.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsa2RnY2pveHZ2ZWJibW51eGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTkwODIsImV4cCI6MjEwMDEzNTA4Mn0.dM-b1C9VQjkXOse-r1cHj89T0GxRIGygiIsKx8y50wI";
@@ -308,8 +313,14 @@
 
     function restPosition(){
       var rect = faceEl.getBoundingClientRect();
-      var w = rect.width || 170;
-      return { left: (window.innerWidth - w) / 2, top: window.innerHeight * 0.4 };
+      var w = rect.width || 170, h = rect.height || w;
+      var top = window.innerHeight * 0.4;
+      if (window.innerWidth <= 600){
+        // Phones: centre the face in the free space under the hint so the lower half isn't empty.
+        var floor = document.getElementById('hint').getBoundingClientRect().bottom + 16;
+        top = Math.max(floor, floor + (window.innerHeight - floor - h) / 2);
+      }
+      return { left: (window.innerWidth - w) / 2, top: top };
     }
 
     function initialPlacement(){
@@ -443,7 +454,9 @@
 
     // Soft rose and apricot specks, now and then a tiny line-drawn heart (static markup).
     var HEART_SVG = '<svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8.6C2.2 6.8 1 5.4 1 3.7 1 2.4 2 1.4 3.2 1.4c.8 0 1.4.4 1.8 1 .4-.6 1-1 1.8-1C8 1.4 9 2.4 9 3.7c0 1.7-1.2 3.1-4 4.9z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>';
+    var calmMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     function spawnParticle(){
+      if (calmMotion.matches || document.hidden) return; // layer is hidden, or nobody is looking
       var el = document.createElement('div');
       el.className = 'floating-particle';
       if (Math.random() < 0.25){ el.classList.add('heart'); el.innerHTML = HEART_SVG; }
