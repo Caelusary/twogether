@@ -186,7 +186,6 @@
   .confirm-sheet[open]::backdrop{ animation:fade-in .22s var(--ease-out); }
   @keyframes sheet-in{ from{ opacity:0; transform:translateY(8px) scale(0.96); } }
   @keyframes fade-in{ from{ opacity:0; } }
-  .confirm-emoji{ display:none; }
   .confirm-sheet h3{ margin:0 0 8px; font-family:var(--font-display); font-weight:400; font-size:22px; line-height:1.2; color:var(--ink); text-wrap:balance; }
   .confirm-body{ margin:0; font-size:15px; line-height:1.55; color:var(--ink-2); text-wrap:pretty; }
   .confirm-field{ margin-top:16px; text-align:left; }
@@ -302,7 +301,6 @@
 
 <dialog class="confirm-sheet" id="confirmSheet" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
   <form id="confirmForm">
-    <div class="confirm-emoji" id="confirmEmoji" aria-hidden="true"></div>
     <h3 id="confirmTitle"></h3>
     <p class="confirm-body" id="confirmBody"></p>
     <div class="confirm-field" id="confirmField" hidden>
@@ -318,14 +316,14 @@
 </dialog>
 
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.3?bundle';
 
   var SUPABASE_URL = "https://vlkdgcjoxvvebbmnuxht.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsa2RnY2pveHZ2ZWJibW51eGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTkwODIsImV4cCI6MjEwMDEzNTA4Mn0.dM-b1C9VQjkXOse-r1cHj89T0GxRIGygiIsKx8y50wI";
   var supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var GALLERY_BUCKET = 'gallery-photos';
-  var moodEmoji = { happy:'😊', tired:'🥱', sad:'😢', mad:'😠', hungry:'🍙', sleepy:'😴', excited:'🤩', naughty:'😏' };
+  var MOODS = ['happy', 'tired', 'sad', 'mad', 'hungry', 'sleepy', 'excited', 'naughty'];
 
   var myUserId = null;
   var myProfile = null;
@@ -352,7 +350,6 @@
   function openConfirm(opts){
     confirmOpts = opts;
     confirmBusy = false;
-    document.getElementById('confirmEmoji').textContent = opts.emoji;
     document.getElementById('confirmTitle').textContent = opts.title;
     document.getElementById('confirmBody').textContent = opts.body;
     confirmField.hidden = !opts.requireText;
@@ -481,7 +478,6 @@
     var files = await listMyGallery();
     var photoCount = files ? files.length : 0;
     openConfirm({
-      emoji: '💞',
       title: 'Join ' + theirName + '?',
       body: "You'll share " + theirName + "'s date and gallery from now on." +
         (photoCount ? ' The ' + photoCount + (photoCount === 1 ? ' photo' : ' photos') + " in your own gallery will be deleted." : ''),
@@ -503,7 +499,6 @@
   document.getElementById('removePartnerBtn').addEventListener('click', function(){
     var name = partnerProfile.display_name;
     openConfirm({
-      emoji: '💔',
       title: 'Remove ' + name + '?',
       body: "You'll keep your date and your gallery. " + name + " gets unpaired, and your invite code changes so you can pair with someone new.",
       goLabel: 'Remove',
@@ -524,7 +519,6 @@
 
   document.getElementById('deleteAccountBtn').addEventListener('click', function(){
     openConfirm({
-      emoji: '🥺',
       title: 'Delete your account?',
       body: partnerProfile
         ? 'Your login and moods are erased for good. ' + partnerProfile.display_name + ' keeps your shared date and photos.'
@@ -574,7 +568,7 @@
     pairInfo = pairRes.data;
     partnerProfile = partnerRes.data;
 
-    var mood = moodRes.data && moodEmoji[moodRes.data.mood] ? moodRes.data.mood : 'happy';
+    var mood = moodRes.data && MOODS.indexOf(moodRes.data.mood) !== -1 ? moodRes.data.mood : 'happy';
     document.body.className = 'mood-' + mood;
     document.getElementById('moodEmoji').dataset.mood = mood;
 
