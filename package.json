@@ -1,0 +1,16 @@
+{
+  "name": "twogether",
+  "private": true,
+  "description": "Dev tooling only. The site itself is plain static HTML with no build step.",
+  "type": "module",
+  "scripts": {
+    "serve": "node e2e/serve.mjs",
+    "csp": "node scripts/csp.mjs",
+    "csp:check": "node scripts/csp.mjs --check",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0"
+  }
+}
