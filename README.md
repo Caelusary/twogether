@@ -55,7 +55,21 @@ npx serve .
 
 Then open `http://localhost:8000/login.html` in a browser.
 
-To stand up your own Supabase project for this site, run every file in `supabase/migrations/` in numeric order against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, and `playground.html`.
+To stand up your own Supabase project for this site, run every file in `supabase/migrations/` in numeric order against a fresh project's SQL Editor, then swap the `SUPABASE_URL`/`SUPABASE_ANON_KEY` constants in `login.html`, `index.html`, `playground.html`, and `profile.html`, and the Supabase host in `scripts/csp.mjs`.
+
+## Tests
+
+The site itself has no build step; `package.json` only holds dev tooling (Vercel never sees it, see `.vercelignore`).
+
+```bash
+npm install
+npx playwright install chromium
+npm run e2e        # Playwright journeys + axe scans, phone (Pixel 7) and desktop
+```
+
+The tests serve the folder with the headers from `vercel.json` and answer every Supabase call from fake data in `e2e/fixtures.js`, so they never touch the live project. Any console error, including a CSP violation, fails a test.
+
+The Content-Security-Policy in `vercel.json` allows inline scripts by hash. After editing any inline `<script>`, run `npm run csp` to refresh the hashes; CI runs `npm run csp:check` and fails if they are stale.
 
 ## Usage
 
