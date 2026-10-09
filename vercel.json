@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-X6PawgffBcvngvr7PuqHAeCyFv/LeRbA/hMCFd9eRWg=' 'sha256-ZFYTaxQ/gwMZBgnBD+RUhFvCadEeS8LnM580rResD1A=' 'sha256-nm5irzonMbgXIUkUrU83SvCcyvqmbpLpAiOinWO+Zic=' 'sha256-sbHvbsFhUJhMg4HvL2/zd4PNACUUdyOH5QwhAk6zpq8=' 'sha256-tV+B+2mIeqLRez4pLmFnh7nH4cXZsUf6yx2BKla3SvA=' 'sha256-un72NjgjDIxJNVsAaZ7+7P2xcFUl0FaVx4STIz03mxk=' https://esm.sh https://browser.sentry-cdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://vlkdgcjoxvvebbmnuxht.supabase.co; connect-src 'self' https://vlkdgcjoxvvebbmnuxht.supabase.co https://o4511733518172160.ingest.us.sentry.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        }
+      ]
+    }
+  ]
+}
