@@ -1,0 +1,14 @@
+# Vercel serves this repo as plain static files. Keep dev tooling and the
+# database schema out of the deploy so it never sees a package.json to build.
+package.json
+package-lock.json
+node_modules
+.nvmrc
+e2e
+scripts
+playwright.config.js
+playwright-report
+test-results
+.github
+supabase
+README.md
